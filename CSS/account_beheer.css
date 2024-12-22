@@ -1,0 +1,81 @@
+/*Basisopmaak voor de gehele pagina.*/
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;  /*Inhoud bovenaan en de footer onderaan.*/
+    overflow-x: hidden;      /*Voorkomt horizontale scrollbalk.*/
+}
+
+body {
+    min-height: 100vh; /*Body heeft minimaal de hoogte van het scherm.*/
+}
+
+/*Main content styling.*/
+main {
+    flex: 1; /*Main strekt zich uit tussen header en footer.*/
+    padding: 0 2cm; /*Inhoud krijgt 2 cm inspringing.*/
+    box-sizing: border-box; /*Padding valt binnen de breedte.*/
+}
+
+/*Formulier container.*/
+.form-container {
+    display: flex;
+    justify-content: center; /*Horizontaal centreren.*/
+    align-items: center;     /*Verticaal centreren.*/
+    flex-grow: 1;            /*Container neemt resterende ruimte in.*/
+    padding: 20px;
+    width: 100%;             /*Form-container benut de volledige breedte.*/
+}
+
+/*Formulier styling.*/
+form {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 300px; /*Formulier heeft een vaste breedte.*/
+    text-align: center;
+    max-width: 100%;  /*Formulier wordt niet breder dan het scherm.*/
+}
+
+/*Label styling*/
+label {
+    display: block;
+    margin-bottom: 10px;
+    text-align: left; /*Tekst van het label links uitlijnen.*/
+}
+
+/*Inputvelden styling.*/
+input {
+    width: 80%;            /*Invoervelden hebben niet de volledige breedte.*/
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+/*Knop styling.*/
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #111; /*Zwarte achtergrondkleur.*/
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #777; /*Grijze kleur bij hover.*/
+}
+
+/*Footer altijd onderaan.*/
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #f1f1f1;
+    position: relative;
+    width: 100%;
+    bottom: 0;
+}

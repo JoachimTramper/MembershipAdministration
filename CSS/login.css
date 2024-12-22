@@ -1,0 +1,70 @@
+/*Specifieke stijlen voor loginpagina.*/
+/*Body en html styles om pagina achter grond in te stellen.*/
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f4f4f4;
+    font-family: 'Arial', sans-serif; /*Specificeer het lettertype.*/
+    flex-direction: column; /*Zorg dat de inhoud verticaal gestapeld wordt.*/
+}
+
+/* Titel styling voor 'Leden administratie biljarvereniging'. */
+.page-title {
+    font-size: 32px; /*Grotere tekst voor de titel.*/
+    font-weight: bold; /*Vetgedrukte tekst.*/
+    color: #333; /*Donkergrijze kleur.*/
+    margin-bottom: 20px; /*Ruimte tussen titel en formulier.*/
+    text-align: center; /*Centreer de titel horizontaal.*/
+}
+
+/*Main container met witte achtergrond, grijs/bruine border, en ronde hoeken.*/
+.form-container {
+    width: 100%;
+    max-width: 400px; /*Breedte van de container.*/
+    padding: 20px;
+    background-color: #fff; /*Witte achtergrond voor de form container.*/
+    border: 2px solid #333; /*Grijs/bruine border.*/
+    border-radius: 10px; /*Rounded corners.*/
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /*Schaduw voor subtiel 3D effect.*/
+}
+
+/*Form styling.*/
+.form-signin {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /*Form content links uitlijnen.*/
+}
+
+/*Input field styles.*/
+.form-label-group {
+    width: 100%;
+    margin-bottom: 1em; /*Ruimte tussen inputs.*/
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc; /*Licht grijze border voor inputs.*/
+    border-radius: 4px;
+    box-sizing: border-box; /*Zeker maken dat de padding niet de breedte beinvloed.*/
+}
+
+/*Button styling.*/
+.btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #333;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 1em; /*Ruimte toevoegen tussen laatste input en de button.*/
+}
+
+.btn:hover {
+    background-color: #000000;
+}

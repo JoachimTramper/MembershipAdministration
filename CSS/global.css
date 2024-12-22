@@ -1,0 +1,83 @@
+/*Algemeen CSS-bestand voor alle pagina's.*/
+
+/*Algemeen voor html en body, 2 cm inspringen links en rechts.*/
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0; 
+}
+
+/*Flex container voor body zodat de inhoud zich uitstrekt van header tot footer.*/
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, sans-serif; 
+}
+
+/*Main content styling.*/
+main {
+    flex: 1; 
+    padding: 0 2cm; /*Inhoud krijgt 2 cm inspringing.*/
+    box-sizing: border-box; 
+}
+
+/*Header-styling.*/
+.header {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    font-size: 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+/*Stijlen voor de links in de header.*/
+.header a {
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+}
+
+/*Hover-effect voor de links in de header.*/
+.header a:hover {
+    text-decoration: underline;
+}
+
+/*Footer-styling.*/
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+/*Tabel styling.*/
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+button:hover, .btn:hover {
+    background-color: #777;
+}
+
+.dropdown-boekjaar-overzicht {
+    display: flex;
+    justify-content: flex-end;
+    
+}
+
+.dropdown-boekjaar-overzicht label {
+    margin-right: 10px; /*Voegt ruimte toe tussen de label en de dropdown.*/
+}
