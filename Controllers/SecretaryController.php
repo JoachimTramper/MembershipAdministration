@@ -1,7 +1,7 @@
 <?php
 
-require_once dirname(__DIR__) . '/Models/SecretarisModel.php';
-require_once dirname(__DIR__) . '/Models/LedenModel.php';
+require_once dirname(__DIR__) . '/Models/SecretaryModel.php';
+require_once dirname(__DIR__) . '/Models/MembersModel.php';
 require_once dirname(__DIR__) . '/Db.php';
 
 class SecretarisController {
@@ -14,89 +14,89 @@ class SecretarisController {
         $this->ledenModel = new LedenModel($db);
     }
 
-    //Voeg een lid toe.
+    //Add a member
     public function voegLidToe($data) {
         try {
-            //Roep de functie aan in het model. 
+            //Call the function in the model 
             $this->secretarisModel->voegLidToe($data);
-            header("Location: index.php?page=leden_bewerken");
+            header("Location: index.php?page=member_management");
             exit;
         } catch (Exception $e) {
             echo "Fout: " . $e->getMessage();
         }
     }
-    //Verwijder een lid.
+    //Delete a member
     public function verwijderLid($id) {
         try {
             $this->secretarisModel->verwijderLid($id);
-            header("Location: index.php?page=leden_bewerken");
+            header("Location: index.php?page=member_management");
             exit;
         } catch (Exception $e) {
             echo "Fout: " . $e->getMessage();
         }
     }
-    //Voeg een familie toe.
+    //Add a family
     public function voegFamilieToe($data) {
         try {
             $this->secretarisModel->voegFamilieToe($data);
-            header("Location: index.php?page=leden_bewerken");
+            header("Location: index.php?page=member_management");
             exit;
         } catch (Exception $e) {
             echo "Fout: " . $e->getMessage();
         }
     }
-    //Verwijder een familie.
+    //Delete a family
     public function verwijderFamilie($familieId) {
-        //Roep de functie aan in het model en zet deze in een variabele. 
+        //Call the function in the model and assign it to a variable 
         $result = $this->secretarisModel->deleteFamilie($familieId); 
         if ($result) {
-            //Redirect naar de leden bewerken pagina na succesvol verwijderen (refresh). 
-            header("Location: index.php?page=leden_bewerken");
+            //Redirect to the edit members page after successful deletion (refresh)
+            header("Location: index.php?page=member_management");
             exit;
         } else {
-            echo "Er is een fout opgetreden bij het verwijderen van de familie.";
+            echo "An error occurred while deleting the family.";
         }
     }    
-    //Haal alle families op.
+    //Retrieve all families
     public function getFamilies() {
         try {
             $families = $this->secretarisModel->getFamilies(); 
-            return $families;  // Return de lijst van families
+            return $families;  //Return the list of families
         } catch (Exception $e) {
-            die("Fout bij het ophalen van families: " . $e->getMessage());
+            die("Error while retrieving families: " . $e->getMessage());
         }
     }
-    //Haal alle rollen op.
+    //Retrieve all roles
     public function getRoles() {
         try {
             $roles = $this->secretarisModel->getRoles();
             return $roles;
         } catch (Exception $e) {
-            die("Fout bij het ophalen van rollen: " . $e->getMessage());
+            die("Error while retrieving roles: " . $e->getMessage());
         }
-    //Bewerk een lid. 
+    //Edit a member
     }public function bewerkLid($id, $data = null) {
-        //Data op null zetten voor het zowel verwerken van een POST-verzoek als voor het ophalen van gegevens.
+        //Set data to null for both processing a POST request and retrieving data
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && $data) {
             $data['id'] = $id;
-            //Validatie van velden.
+            //Validation of fields
             $requiredFields = ['naam', 'adres', 'geboortedatum', 'gebruikersnaam', 'wachtwoord', 'familie_id', 'rol'];
             foreach ($requiredFields as $field) {
                 if (empty($data[$field])) {
-                    throw new Exception("Veld '$field' is verplicht!");
+                    throw new Exception("Field '$field' is mandatory!");
                 }
             }
-            //Bijwerken van gegevens.
+            //Updating data
             $this->secretarisModel->updateLid($data);
-            header("Location: index.php?page=leden_bewerken"); // Redirect bij succes
+            header("Location: index.php?page=member_management"); //Redirect on success
             exit;
         }    
-        //Huidige gegevens ophalen.
+        //Retrieve current data
         $lid = $this->ledenModel->getLidById($id);
         if (!$lid) {
-            throw new Exception("Lid niet gevonden!");
+            throw new Exception("Member not found!");
         } 
-        include 'views/bewerk_lid.php'; // Toon het formulier met bestaande gegevens
+        include 'views/update_member.php'; //Display the form with existing data
     }
     
 }                

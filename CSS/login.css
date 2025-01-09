@@ -1,5 +1,5 @@
-/*Specifieke stijlen voor loginpagina.*/
-/*Body en html styles om pagina achter grond in te stellen.*/
+/*Styles for the login page*/
+/*Body and HTML styles to set the background of the page*/
 body, html {
     height: 100%;
     margin: 0;
@@ -7,52 +7,52 @@ body, html {
     justify-content: center;
     align-items: center;
     background-color: #f4f4f4;
-    font-family: 'Arial', sans-serif; /*Specificeer het lettertype.*/
-    flex-direction: column; /*Zorg dat de inhoud verticaal gestapeld wordt.*/
+    font-family: 'Arial', sans-serif; /*Specify the font*/
+    flex-direction: column; /*Ensure that the content is stacked vertically*/
 }
 
-/* Titel styling voor 'Leden administratie biljarvereniging'. */
+/*Title styling for 'Members Administration Billiards Association'*/
 .page-title {
-    font-size: 32px; /*Grotere tekst voor de titel.*/
-    font-weight: bold; /*Vetgedrukte tekst.*/
-    color: #333; /*Donkergrijze kleur.*/
-    margin-bottom: 20px; /*Ruimte tussen titel en formulier.*/
-    text-align: center; /*Centreer de titel horizontaal.*/
+    font-size: 32px; /*Larger text for the title*/
+    font-weight: bold; /*Bold text*/
+    color: #333; /*Dark gray color*/
+    margin-bottom: 20px; /*Space between the title and the form*/
+    text-align: center; /*Center the title horizontally*/
 }
 
-/*Main container met witte achtergrond, grijs/bruine border, en ronde hoeken.*/
+/*Main container with a white background, gray/brown border, and rounded corners*/
 .form-container {
     width: 100%;
-    max-width: 400px; /*Breedte van de container.*/
+    max-width: 400px; /*Width of the container*/
     padding: 20px;
-    background-color: #fff; /*Witte achtergrond voor de form container.*/
-    border: 2px solid #333; /*Grijs/bruine border.*/
-    border-radius: 10px; /*Rounded corners.*/
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /*Schaduw voor subtiel 3D effect.*/
+    background-color: #fff; /*White background for the form container*/
+    border: 2px solid #333; /*Gray/brown border*/
+    border-radius: 10px; /*Rounded corners*/
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /*Shadow for a subtle 3D effect*/
 }
 
-/*Form styling.*/
+/*Form styling*/
 .form-signin {
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /*Form content links uitlijnen.*/
+    align-items: flex-start; /*Align form content to the left*/
 }
 
-/*Input field styles.*/
+/*Input field styles*/
 .form-label-group {
     width: 100%;
-    margin-bottom: 1em; /*Ruimte tussen inputs.*/
+    margin-bottom: 1em; /*Space between inputs*/
 }
 
 .form-control {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ccc; /*Licht grijze border voor inputs.*/
+    border: 1px solid #ccc; /*Light gray border for inputs*/
     border-radius: 4px;
-    box-sizing: border-box; /*Zeker maken dat de padding niet de breedte beinvloed.*/
+    box-sizing: border-box; /*Ensure that the padding does not affect the width*/
 }
 
-/*Button styling.*/
+/*Button styling*/
 .btn {
     width: 100%;
     padding: 10px;
@@ -62,7 +62,7 @@ body, html {
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-    margin-top: 1em; /*Ruimte toevoegen tussen laatste input en de button.*/
+    margin-top: 1em; /*Add space between the last input and the button*/
 }
 
 .btn:hover {

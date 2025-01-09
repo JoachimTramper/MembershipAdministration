@@ -1,9 +1,9 @@
 <?php
-//Start sessie indien deze nog niet gestart is.
+//Start the session if it has not already been started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-//Controleer of de gebruiker is ingelogd en of de sessie geldig is.
+//Check if the user is logged in and if the session is valid
 if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] !== true) {
     header("Location: ../index.php");
     exit;
@@ -13,18 +13,18 @@ include 'header.php';
 ?>
 
 <link rel="stylesheet" href="../css/global.css">
-<h1>Welkom, <?php echo htmlspecialchars($gebruiker); ?>! U bent ingelogd als <?php echo htmlspecialchars($rol); ?>.</h1>
-<h2>Overzicht van betalingen per familie</h2>
+<h1>Welcome, <?php echo htmlspecialchars($gebruiker); ?>! You are logged in as <?php echo htmlspecialchars($rol); ?>.</h1>
+<h2>Overview of payments per family</h2>
 <?php if (empty($leden)): ?>
-    <!-- Toon dit bericht als er geen familieleden zijn of als er geen betalingen zijn gevonden. -->
-    <p>Er zijn geen familieleden of betalingen gevonden.</p>
+    <!-- Display this message if no family members or payments are found -->
+    <p>No family members or payments found</p>
 <?php else: ?>
-    <!-- Tabel met familieleden en hun openstaande betalingen. -->
+    <!-- Table with family members and their outstanding payments -->
     <table>
         <thead>
             <tr>
-                <th>Familielid</th>
-                <th>Openstaande Betalingen</th>
+                <th>Family Member</th>
+                <th>Outstanding Payments</th>
             </tr>
         </thead>
         <tbody>
@@ -33,11 +33,11 @@ include 'header.php';
                     <td><?= htmlspecialchars($lid['naam']) ?></td>
                     <td>
                         <?php if ($lid['bedrag'] !== null): ?>
-                            <!-- Als er een openstaand bedrag is, toon het met een euroteken en formateer het als valuta. -->
+                            <!-- If there is an outstanding amount, display it with a euro symbol and format it as currency -->
                             € <?= number_format($lid['bedrag'], 2, ',', '.') ?>
                         <?php else: ?>
-                            <!-- Als er geen openstaand bedrag is, geef een alternatieve boodschap. -->
-                            Geen openstaande betaling
+                            <!-- If there is no outstanding amount, display an alternative message -->
+                            No outstanding payment
                         <?php endif; ?>
                     </td>
                 </tr>
@@ -46,7 +46,7 @@ include 'header.php';
     </table>
 <?php endif; ?>
 <br>
-    <!-- Totaal van alle openstaande betalingen weergeven. -->
-    <h3>Totaal Openstaande Betalingen: € <?= number_format($totaal_openstaande_betalingen, 2, ',', '.') ?></h3>
+    <!-- Display the total of all outstanding payments -->
+    <h3>Total Outstanding Payments: € <?= number_format($totaal_openstaande_betalingen, 2, ',', '.') ?></h3>
 </body>
 <?php include 'footer.php'; ?>

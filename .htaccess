@@ -1,7 +1,6 @@
 RewriteEngine On
 RewriteBase /Ledenadministratie2/
-
-# Zorg ervoor dat alles via index.php gaat, maar correct omgeleid wordt
+#Ensure all requests are directed through index.php with proper redirection
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(index\.php)$ index.php [L]

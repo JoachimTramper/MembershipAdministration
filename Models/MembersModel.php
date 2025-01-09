@@ -3,56 +3,57 @@
 class LedenModel {
     private $db;
 
-    //Constructor voor database verbinding. 
+    //Constructor for database connection 
     public function __construct($db) {
         $this->db = $db;
     }
-    //Functie voor het updaten van accountgegevens (gebruikersnaam en wachtwoord).
+    //Function for updating account details (username and password)
     public function updateAccount($userId, $newUsername, $newPassword) {
         try {
-            //Maak verbinding met de database.
+            //Establish a connection to the database
             $conn = $this->db->connect();
-            //Bereid de SQL-query voor om de gebruikersnaam en het wachtwoord te updaten.
+            //Prepare the SQL query to update the username and password
             $stmt = $conn->prepare("UPDATE gebruikers SET gebruikersnaam = ?, wachtwoord = ? WHERE id = ?");
-            //Voer de query uit met de nieuwe gebruikersnaam en wachtwoord (gehasht).
+            //Execute the query with the new username and password (hashed)
             $stmt->execute([$newUsername, password_hash($newPassword, PASSWORD_DEFAULT), $userId]);
-            return true;        //Succesvol bijgewerkt. 
+            return true;        //Successfully updated
         } catch (PDOException $e) {
-            //Als er een fout optreedt, geef dan een foutmelding via een uitzondering.
+            //If an error occurs, throw an exception with an error message
             return false;
         }
     }
-    //Functie om alle leden op te halen.
+    //Function to retrieve all members
     public function getAllLeden() {
         try {
             $conn = $this->db->connect();
             if ($conn) {
             } else {
-                echo "Databaseverbinding mislukt!<br>";
+                echo "Database connection failed!<br>";
             }
-            //SQL-query om leden op te halen. 
+            //SQL query to retrieve members
             $sql = "SELECT fl.id, fl.naam, fa.adres, sl.soort_lid 
             FROM familieleden fl
             INNER JOIN families fa ON fl.familie_id = fa.id  
-            INNER JOIN soorten_lid sl ON fl.soort_lid_id = sl.id";
+            INNER JOIN soorten_lid sl ON fl.soort_lid_id = sl.id
+            ORDER BY fl.id ASC";
             $conn = $this->db->connect();  
             $stmt = $conn->prepare($sql);
-            //Voer de query uit. 
+            //Execute the query 
             $stmt->execute();
-            //Haal alle resultaten op en zet deze in een variabele. 
+            //Fetch all results and store them in a variable
             $leden = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            //Als er geen leden zijn, geef een melding.       
+            //If no members are found, display a message       
             if (count($leden) === 0) {
-                echo "Geen leden gevonden!<br>";
+                echo "No members found!<br>";
             }                       
-            //Geef de resultaten terug als een associatieve array.
+            //Return the results as an associative array
             return $leden;
         } catch (PDOException $e) {
-            //Foutafhandeling bij databaseproblemen.
+            //Error handling for database issues
             throw new Exception("Database error: " . $e->getMessage());
         }
     }
-    //Haalt een specifiek lid op aan de hand van het ID.
+    //Retrieves a specific member based on the ID
     public function getLidById($id) {
         $sql = "SELECT f.id, f.familie_id, f.naam, f.geboortedatum, f.soort_lid_id, g.gebruikersnaam, g.wachtwoord, g.rol, fam.adres
                 FROM familieleden f
@@ -62,19 +63,19 @@ class LedenModel {
         try {       
             $conn = $this->db->connect();  
             $stmt = $conn->prepare($sql);
-            //Bind de parameter 'id' aan de query.
+            //Bind the parameter 'id' to the query
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();  
             
-            //Haal het resultaat op (return de eerste rij).
-            return $stmt->fetch(PDO::FETCH_ASSOC);  //Haal de gegevens van het lid als een associatieve array.
+            //Fetch the result (return the first row)
+            return $stmt->fetch(PDO::FETCH_ASSOC);  //Retrieve the member's data as an associative array
         } catch (PDOException $e) {
-            echo "Fout bij het ophalen van het lid: " . $e->getMessage();
+            echo "Error retrieving the member: " . $e->getMessage();
         }
     } 
-    //Haalt alle leden op voor bewerkingsdoeleinden.
+    //Retrieves all members for editing purposes
     public function getAllLedenBewerken() {
-        //SQL-query om leden op te halen voor bewerking, inclusief rol, adres en soort lid.
+        //SQL query to retrieve members for editing, including role, address, and membership type
         $sql = "SELECT 
             f.id, f.naam, f.geboortedatum, f.soort_lid_id, g.gebruikersnaam, g.wachtwoord, g.rol, f.familie_id, fa.adres, sl.soort_lid, r.rol_soort
         FROM familieleden f 
@@ -87,35 +88,35 @@ class LedenModel {
             $conn = $this->db->connect();
             $stmt = $conn->prepare($sql);
             $stmt->execute();
-            //Haal alle resultaten op en zet deze in een variabele.
+            //Fetch all results and store them in a variable
             $leden = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            //Als er geen leden zijn, geef een melding.   
-            error_log("Leden data: " . print_r($leden, true));    
+            //If no members are found, display a message 
+            error_log("Members data: " . print_r($leden, true));    
             if (count($leden) === 0) {
-                echo "Geen leden gevonden!<br>";
+                echo "No members found!<br>";
             }                       
-            // Geef de resultaten terug als een associatieve array.
+            //Return the results as an associative array
             return $leden;
         } catch (PDOException $e) {
-            throw new Exception("Fout bij het ophalen van leden: " . $e->getMessage());
+            throw new Exception("Error retrieving members: " . $e->getMessage());
         }
     }
-    //Haalt alle familieleden inclusief eventuele openstaande betalingen.
+    //Retrieves all family members, including any outstanding payments
     public function getFamilieledenMetOpenstaandeBetalingen($gebruiker_id) {
         try {
             $conn = $this->db->connect();
-            //Haal het familie_id van de gebruiker op.
+            //Retrieve the family_id of the user
             $query_familie_id = "SELECT familie_id FROM familieleden WHERE id = :gebruiker_id";
             $stmt_familie_id = $conn->prepare($query_familie_id);
             $stmt_familie_id->bindParam(':gebruiker_id', $gebruiker_id);
             $stmt_familie_id->execute();
             $familie_id = $stmt_familie_id->fetchColumn();
             
-            // Als er geen familie_id gevonden wordt, geef een lege array terug
+            //If no family_id is found, return an empty array
             if (!$familie_id) {
                 return [];
             }
-            //Haal alle familieleden op, inclusief betalingen (indien aanwezig).
+            //Retrieve all family members, including payments (if available)
             $query = "
                 SELECT f.id, f.naam, c.bedrag, c.betaaldatum
                 FROM familieleden f
@@ -128,7 +129,7 @@ class LedenModel {
     
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo "Fout bij ophalen familieleden en openstaande betalingen: " . $e->getMessage();
+            echo "Error retrieving family members and outstanding payments: " . $e->getMessage();
         }
     }
     

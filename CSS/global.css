@@ -1,27 +1,27 @@
-/*Algemeen CSS-bestand voor alle pagina's.*/
+/*General CSS file for all pages*/
 
-/*Algemeen voor html en body, 2 cm inspringen links en rechts.*/
+/*General for HTML and body, 2 cm indentation on the left and right*/
 html, body {
     height: 100%;
     margin: 0;
     padding: 0; 
 }
 
-/*Flex container voor body zodat de inhoud zich uitstrekt van header tot footer.*/
+/*Flex container for the body so that the content stretches from the header to the footer*/
 body {
     display: flex;
     flex-direction: column;
     font-family: Arial, sans-serif; 
 }
 
-/*Main content styling.*/
+/*Main content styling*/
 main {
     flex: 1; 
-    padding: 0 2cm; /*Inhoud krijgt 2 cm inspringing.*/
+    padding: 0 2cm; /*Content gets a 2 cm indentation*/
     box-sizing: border-box; 
 }
 
-/*Header-styling.*/
+/*Header styling*/
 .header {
     background-color: #333;
     color: white;
@@ -32,19 +32,19 @@ main {
     align-items: center;
 }
 
-/*Stijlen voor de links in de header.*/
+/*Styles for the links in the header*/
 .header a {
     color: white;
     text-decoration: none;
     margin-right: 20px;
 }
 
-/*Hover-effect voor de links in de header.*/
+/*Hover-effect for the links in the header*/
 .header a:hover {
     text-decoration: underline;
 }
 
-/*Footer-styling.*/
+/*Footer styling*/
 footer {
     background-color: #333;
     color: white;
@@ -52,7 +52,7 @@ footer {
     padding: 20px;
 }
 
-/*Tabel styling.*/
+/*Table styling*/
 table {
     width: 100%;
     border-collapse: collapse;
@@ -79,5 +79,5 @@ button:hover, .btn:hover {
 }
 
 .dropdown-boekjaar-overzicht label {
-    margin-right: 10px; /*Voegt ruimte toe tussen de label en de dropdown.*/
+    margin-right: 10px; /*Adds space between the label and the dropdown*/
 }

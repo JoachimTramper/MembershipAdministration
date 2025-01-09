@@ -1,13 +1,13 @@
 <?php
 
-//Start de sessie als deze nog niet is gestart.
+//Start the session if it has not already been started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-//Controleer of de gebruiker is ingelogd.
+//Check if the user is logged in
 if (!isset($_SESSION['role'])) {
-    //Als de gebruiker niet is ingelogd, doorverwijzen naar de loginpagina.
+    //If the user is not logged in, redirect to the login page
     header('Location: index.php?page=login');
     exit;
 }
@@ -19,23 +19,23 @@ include('header.php');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wijzig Account</title>
+    <title>Update Account</title>
     <link rel="stylesheet" href="../css/account_beheer.css">
 
 </head>
 <body>
 <main>
-    <h1>Wijzig Account</h1>
-    <!-- Formulier container. -->
+    <h1>Update Account</h1>
+    <!-- Form container -->
     <div class="form-container">
-        <form method="post" action="index.php?page=account">
-            <label for="username">Nieuwe gebruikersnaam:&emsp;</label>
+        <form method="post" action="index.php?page=account_management">
+            <label for="username">New username:&emsp;</label>
             <input type="text" id="username" name="gebruikersnaam" required>
             <br><br>
-            <label for="password">Nieuw wachtwoord:&emsp;</label>
+            <label for="password">New password:&emsp;</label>
             <input type="password" id="password" name="wachtwoord" required>
             <br><br>
-            <button type="submit" name="update_account">Opslaan</button>
+            <button type="submit" name="update_account">Save</button>
         </form>
     </div>
 </main>

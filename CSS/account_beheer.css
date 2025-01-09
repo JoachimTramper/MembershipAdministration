@@ -1,65 +1,65 @@
-/*Basisopmaak voor de gehele pagina.*/
+/*Basic layout for the entire page*/
 html, body {
     margin: 0;
     padding: 0;
     height: 100%;
     display: flex;
-    flex-direction: column;  /*Inhoud bovenaan en de footer onderaan.*/
-    overflow-x: hidden;      /*Voorkomt horizontale scrollbalk.*/
+    flex-direction: column;  /*Content at the top and the footer at the bottom*/
+    overflow-x: hidden;      /*Prevents horizontal scrollbar*/
 }
 
 body {
-    min-height: 100vh; /*Body heeft minimaal de hoogte van het scherm.*/
+    min-height: 100vh; /*The body has at least the height of the screen*/
 }
 
-/*Main content styling.*/
+/*Main content styling*/
 main {
-    flex: 1; /*Main strekt zich uit tussen header en footer.*/
-    padding: 0 2cm; /*Inhoud krijgt 2 cm inspringing.*/
-    box-sizing: border-box; /*Padding valt binnen de breedte.*/
+    flex: 1; /*The main section stretches between the header and footer*/
+    padding: 0 2cm; /*Content gets a 2 cm indentation*/
+    box-sizing: border-box; /*Padding is within the width*/
 }
 
-/*Formulier container.*/
+/*Form container*/
 .form-container {
     display: flex;
-    justify-content: center; /*Horizontaal centreren.*/
-    align-items: center;     /*Verticaal centreren.*/
-    flex-grow: 1;            /*Container neemt resterende ruimte in.*/
+    justify-content: center; /*Center horizontally*/
+    align-items: center;     /*Center vertically*/
+    flex-grow: 1;            /*The container takes up the remaining space*/
     padding: 20px;
-    width: 100%;             /*Form-container benut de volledige breedte.*/
+    width: 100%;             /*The form container uses the full width*/
 }
 
-/*Formulier styling.*/
+/*Form styling*/
 form {
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    width: 300px; /*Formulier heeft een vaste breedte.*/
+    width: 300px; /*The form has a fixed width*/
     text-align: center;
-    max-width: 100%;  /*Formulier wordt niet breder dan het scherm.*/
+    max-width: 100%;  /*The form does not exceed the width of the screen*/
 }
 
 /*Label styling*/
 label {
     display: block;
     margin-bottom: 10px;
-    text-align: left; /*Tekst van het label links uitlijnen.*/
+    text-align: left; /*Align the label text to the left*/
 }
 
-/*Inputvelden styling.*/
+/*Input fields styling*/
 input {
-    width: 80%;            /*Invoervelden hebben niet de volledige breedte.*/
+    width: 80%;            /*Input fields do not have the full width*/
     padding: 10px;
     margin-bottom: 20px;
     border-radius: 4px;
     border: 1px solid #ccc;
 }
 
-/*Knop styling.*/
+/*Button styling*/
 button {
     width: 100%;
     padding: 10px;
-    background-color: #111; /*Zwarte achtergrondkleur.*/
+    background-color: #111; /*Black background color*/
     color: white;
     border: none;
     border-radius: 4px;
@@ -67,10 +67,10 @@ button {
 }
 
 button:hover {
-    background-color: #777; /*Grijze kleur bij hover.*/
+    background-color: #777; /*Gray color on hover*/
 }
 
-/*Footer altijd onderaan.*/
+/*Footer always at the bottom*/
 footer {
     text-align: center;
     padding: 10px;

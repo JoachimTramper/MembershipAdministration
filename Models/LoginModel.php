@@ -3,45 +3,45 @@
 class LoginModel
 {
     private $db;
-    //Constructor voor het verbinden met de database.
+    //Constructor for connecting to the database
     public function __construct($db)
     {
         $this->db = $db;
     }
-    //Functie voor de authenticatie van een gebruiker.
+    //Function for authenticating a user
     public function authenticate($username, $password)
 {
     try {
-        //Connectie maken met de database.
+        //Establish a connection to the database
         $conn = $this->db->connect();
-        //Bereid de SQL-query voor om de gebruiker en rol op te halen.
+        //Prepare the SQL query to retrieve the user and role
         $stmt = $conn->prepare(
             "SELECT g.id, g.gebruikersnaam, g.wachtwoord, r.rol_soort 
             FROM gebruikers g 
             JOIN rol r ON g.rol = r.id 
             WHERE g.gebruikersnaam = :username");
-        // Bind de gebruikersnaam parameter aan de query
+        //Bind the username parameter to the query
         $stmt->bindParam(':username', $username, PDO::PARAM_STR);
-        //Voer query uit.
+        //Execute query
         $stmt->execute();
-        //Controleer of er exact 1 gebruiker is gevonden.
+        //Verify that exactly one user has been found
         if ($stmt->rowCount() === 1) {
-            //Haal de gebruikersgegevens op.
+            //Retrieve the user data
             $user = $stmt->fetch(PDO::FETCH_ASSOC);         
-            //Vergelijk het ingevoerde wachtwoord met het opgeslagen wachtwoord.
+            //Compare the entered password with the stored password
             if (password_verify($password, $user['wachtwoord'])) {
-                //Wachtwoord is correct, retourneer de gebruikersgegevens.
+                //Password is correct, return the user data
                 return $user;
             } else {
-                //Foutmelding als het wachtwoord onjuist is.
-                return 'Ongeldig paswoord';
+                //Error message if the password is incorrect
+                return 'Invalid password';
             }
         } else {
-            //Foutmelding als de gebruiker niet gevonden is.
-            return 'Gebruiker niet gevonden';
+            //Error message if the user is not found
+            return 'User not found';
         }
     } catch (PDOException $e) {
-        //Foutafhandeling bij databasefouten.
+        //Error handling for database errors
         throw new Exception("Database error: " . $e->getMessage());
     }
 }

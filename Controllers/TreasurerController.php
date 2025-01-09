@@ -1,7 +1,7 @@
 <?php
-//Ob starten om problemen met redirecten te voorkomen. 
+//Start ob to avoid issues with redirection
 ob_start();
-require_once dirname(__DIR__) . '/Models/PenningmeesterModel.php';
+require_once dirname(__DIR__) . '/Models/TreasurerModel.php';
 require_once dirname(__DIR__) . '/Db.php';
 
 class PenningmeesterController {
@@ -12,23 +12,23 @@ class PenningmeesterController {
         $this->penningmeesterModel = new PenningmeesterModel($db);
     }
 
-    //Toon het overzicht van contributies.
+    //Display the overview of contributions
     public function showContributiesOverzicht() {
         try {
-            //Haal contributies, boekjaren en familieleden op.
+            //Retrieve contributions, fiscal years, and family members
             $contributies = $this->penningmeesterModel->getAllContributies();
             $boekjaren = $this->penningmeesterModel->getAllBoekjaren(); 
             $familieleden = $this->penningmeesterModel->getAllFamilieleden();
-            //Toon de view.
-            include_once __DIR__ . '/../views/contributies_overzicht.php';
+            //Display the view
+            include_once __DIR__ . '/../views/contributions_overview.php';
         } catch (Exception $e) {
-            echo "Er is een fout opgetreden bij het ophalen van contributies, boekjaren of familieleden: " . $e->getMessage();
+            echo "An error occurred while retrieving contributions, fiscal years, or family members: " . $e->getMessage();
         }
     }
-    //Voeg een nieuwe contributie toe.
+    //Add a new contribution
     public function voegContributieToe() {
         try {
-            //Verkrijg de gegevens uit het formulier en zet ze in een array. 
+            //Retrieve the data from the form and store it in an array 
             $data = [
                 'familielid_id' => empty($_POST['familielid_id']) ? NULL : $_POST['familielid_id'],
                 'bedrag' => $_POST['bedrag'],
@@ -37,113 +37,113 @@ class PenningmeesterController {
                 'boekjaar_id' => $_POST['boekjaar_id'],
                 'aantekening' => $_POST['aantekening']
             ];       
-            //Bereken bedrag als het familielid een korting heeft en er geen bedrag is ingevuld.
+            //Calculate the amount if the family member has a discount and no amount has been entered
             if ($data['familielid_id'] && empty($data['bedrag'])) {
-                //Haal de korting op voor het familielid.
+                //Retrieve the discount for the family member
                 $kortingPercentage = $this->penningmeesterModel->getKorting($data['familielid_id']);    
-                //Standaardbedrag is 100 euro, pas de korting toe.
+                //The default amount is 100 euros; apply the discount
                 $data['bedrag'] = 100 * (1 - $kortingPercentage / 100);
             }     
-            //Voeg de contributie toe via het model.
+            //Add the contribution through the model
             $this->penningmeesterModel->addContributie($data);     
-            //Redirect naar de overzichtspagina.
-            header("Location: index.php?page=contributies_overzicht&id");
+            //Redirect to the overview page
+            header("Location: index.php?page=contributions_overview&id");
             exit;       
         } catch (Exception $e) {
-            echo "Er is een fout opgetreden: " . $e->getMessage();
+            echo "An error occurred: " . $e->getMessage();
         }
     }    
-    //Verwijder een contributie.
+    //Delete a contribution
     public function verwijderContributie($id) {
         try {
-            //Verwijder de contributie via het model.
+            //Delete the contribution through the model
             $this->penningmeesterModel->verwijderContributie($id);
-            //Redirect naar het overzicht van contributies (refresh).
-            header("Location: index.php?page=contributies_overzicht");
-            ob_end_flush();     //Ob flushen na header (niet strikt noodzakelijk).
+            //Redirect to the contributions overview (refresh)
+            header("Location: index.php?page=contributions_overview");
+            ob_end_flush();     //Flush the output buffer after the header (not strictly necessary)
             exit;
         } catch (Exception $e) {
-            echo "Fout bij het verwijderen van de contributie: " . $e->getMessage();
+            echo "Error while deleting the contribution: " . $e->getMessage();
         }
     }
-    //Update een bestaande contributie.
+    //Update an existing contribution
     public function wijzigContributie($id) {
-        //Haal de huidige gegevens van de contributie op.
+        //Retrieve the current data of the contribution
         $contributie = $this->penningmeesterModel->getContributieById($id);   
         if (!$contributie) {
-            //Als er geen contributie wordt gevonden, toon een foutmelding. 
-            echo "Contributie niet gevonden!";
+            //If no contribution is found, display an error message
+            echo "Contribution not found!";
             return;
         }     
-        //Als het een POST-aanvraag is, werk dan de contributie bij.
+        //If it is a POST request, update the contribution
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            //Maak een array met de gegevens van de POST-aanvraag.
+            //Create an array with the data from the POST request
             $data = [
                 'id' => $_POST['id'],
-                'familielid_id' => $_POST['familielid_id'] ? $_POST['familielid_id'] : NULL, // Zet NULL als geen familielid_id is ingevuld
+                'familielid_id' => $_POST['familielid_id'] ? $_POST['familielid_id'] : NULL, //Set NULL if no family_member_id is provided
                 'bedrag' => $_POST['bedrag'],
                 'type' => $_POST['type'],
-                'betaaldatum' => $_POST['betaaldatum'] ? $_POST['betaaldatum'] : NULL, // Zet NULL als geen betaaldatum is ingevuld
+                'betaaldatum' => $_POST['betaaldatum'] ? $_POST['betaaldatum'] : NULL, //Set NULL if no payment date is provided
                 'boekjaar_id' => $_POST['boekjaar_id'],
                 'aantekening' => $_POST['aantekening']
             ];  
-            //Update de contributie via het mode.
+            //Update the contribution through the model
             $success = $this->penningmeesterModel->updateContributie($data);     
             if ($success) {
-                //Redirect naar het overzicht van contributies als de update succesvol is.
-                header("Location: index.php?page=contributies_overzicht");
-                ob_end_flush();     //Ob flushen na header (niet strikt noodzakelijk).
+                //Redirect to the contributions overview if the update is successful
+                header("Location: index.php?page=contributions_overview");
+                ob_end_flush();     //Flush the output buffer after the header (not strictly necessary)
                 exit;
             } else {
-                //Toon een foutmelding als de update niet gelukt is.
-                echo "Fout bij het bijwerken van de contributie.";
+                //Display an error message if the update failed
+                echo "Error while updating the contribution";
             }
         }       
-        // Haal de boekjaren op voor het formulier
+        //Retrieve the fiscal years for the form
         $boekjaren = $this->penningmeesterModel->getAllBoekjaren();      
-        //Toon het bewerkte formulier met de huidige gegevens.
-        include 'views/bewerk_contributie.php';
+        //Display the edited form with the current data
+        include 'views/update_contribution.php';
     }        
-    //Voeg een nieuw boekjaar toe.     
+    //Add a new fiscal year
     public function voegNieuwBoekjaarToe() {
         try {
-            //Voeg het nieuwe boekjaar toe via het model.
+            //Add the new fiscal year through the model
             $nieuwJaar = $this->penningmeesterModel->addNieuwBoekjaar(); 
             
-            //Redirect naar het contributie overzicht (refresh).
-            header("Location: index.php?page=contributies_overzicht");
-            ob_end_flush();     //Ob flushen na header (niet strict noodzakelijk).
+            //Redirect to the contributions overview (refresh)
+            header("Location: index.php?page=contributions_overview");
+            ob_end_flush();     //Flush the output buffer after the header (not strictly necessary)
             exit;             
         } catch (Exception $e) {
-            echo "Fout bij het toevoegen van een nieuw boekjaar: " . $e->getMessage();
+            echo "Error while adding a new fiscal year: " . $e->getMessage();
         }
     }
-    //Toon contributies per boekjaar.
+    //Display contributions per fiscal year
     public function showContributiesPerBoekjaar($boekjaar_id = null) {
         try {
-            //Controleer of er een boekjaar_id is meegegeven. Zo niet, probeer deze uit de query string te halen
+            //Check if a fiscal_year_id is provided. If not, try to retrieve it from the query string
             if ($boekjaar_id === null) {
                 $boekjaar_id = isset($_GET['boekjaar_id']) ? intval($_GET['boekjaar_id']) : null;
             }
-                //Haal contributies per boekjaar op.
+                //Retrieve contributions per fiscal year
             if ($boekjaar_id) {
                 $contributiesData = $this->penningmeesterModel->getContributiesPerBoekjaar($boekjaar_id);
                 $boekjaar = $this->penningmeesterModel->getBoekjaarById($boekjaar_id);
                 $boekjaren = $this->penningmeesterModel->getAllBoekjaren();
-                // Haal de contributies en totalen uit het resultaat
+                //Retrieve the contributions and totals from the result
                 $contributies = $contributiesData['contributies'];
                 $inkomsten_totaal = $contributiesData['inkomsten_totaal'];
                 $uitgaven_totaal = $contributiesData['uitgaven_totaal'];
                 $belastingen_totaal = $contributiesData['belastingen_totaal'];
                 $totaal = $contributiesData['totaal'];                
             } else {
-                //Toon een fout als geen boekjaar geselecteerd is.
-                throw new Exception("Geen geldig boekjaar geselecteerd.");
+                //Display an error if no fiscal year is selected
+                throw new Exception("No valid fiscal year selected.");
             }  
-            //Toon de view voor het geselecteerde boekjaar.
-            include_once __DIR__ . '/../views/boekjaar_overzicht.php';
+            //Display the view for the selected fiscal year
+            include_once __DIR__ . '/../views/year_overview.php';
         } catch (Exception $e) {
-            echo "Er is een fout opgetreden bij het ophalen van de gegevens: " . $e->getMessage();
+            echo "An error occurred while retrieving the data: " . $e->getMessage();
         }
     }
     

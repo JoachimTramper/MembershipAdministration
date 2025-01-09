@@ -1,15 +1,16 @@
 <html>
 <head>
-<link rel="stylesheet" href="../css/login.css">
+    <link rel="stylesheet" href="../css/login.css">
+    <title>Login</title> 
 </head>
-<body> <!--Vormgeving form om in te loggen en bijbehorende input velden en button.-->  
+<body>   
             <!--Titel boven het formulier.-->
     <div class="page-title">
-        Ledenadministratie biljartvereniging 'De Kromme Keu'
+        Member Administration of Billiard Club 'The Crooked Cue'
     </div>
 
-    <div class="form-container">                <!--wrapper om flexbox toe te passen.-->  
-        <form class="form-signin" method="post" action="/index.php"> <!--action="/login" gebruikt voor het juist doorverwijzen via .htaccess naar index.php.-->
+    <div class="form-container">                <!--Wrapper to apply flexbox-->  
+        <form class="form-signin" method="post" action="/index.php"> <!-- Action submits to index.php for processing -->
             <div class="form-label-group">
                 <input type="text" class="form-control" placeholder="Username" required autofocus name="uname">
             </div>

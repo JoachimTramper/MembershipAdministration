@@ -4,39 +4,39 @@ require_once dirname(__DIR__) . '/Db.php';
 
 class PenningmeesterModel {
     private $db;
-    //Constructor om de databaseverbinding te initialiseren.
+    //Constructor to initialize the database connection
     public function __construct($db) {
         $this->db = $db;
     }
-    //Haal alle contributies op.
+    //Retrieve all contributions
     public function getAllContributies() {
         try {
-            //Query in variabele zetten. 
+            //Store the query in a variable
             $sql = "SELECT c.id, c.bedrag, c.type, c.betaaldatum, c.boekjaar_id, c.aantekening, b.jaar AS boekjaar_jaar, f.naam AS familielid_naam
             FROM contributies c
             LEFT JOIN boekjaren b ON c.boekjaar_id = b.id
             LEFT JOIN familieleden f ON c.familielid_id = f.id";
-            //Maak verbinding met de database.
+            //Establish a connection to the database
             $conn = $this->db->connect();
-            //Bereid de SQL-query voor om alle contributies op te halen. 
+            //Prepare the SQL query to retrieve all contributions
             $stmt = $conn->prepare($sql);
-            //Voer de query uit.
+            //Execute the query
             $stmt->execute();
-            //Geef resultaten terug als array. 
+            //Return results as an array
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            //Foutmelding bij error.  
+            //Error message on failure  
             throw new Exception("Error retrieving contributions: " . $e->getMessage());
         }
     }
-    //Voeg een nieuwe contributie toe.
+    //Add a new contribution
     public function addContributie($data) {
         try {
             $sql = "INSERT INTO contributies (familielid_id, bedrag, type, betaaldatum, boekjaar_id, aantekening) 
             VALUES (:familielid_id, :bedrag, :type, :betaaldatum, :boekjaar_id, :aantekening)";
             $conn = $this->db->connect();
             $stmt = $conn->prepare($sql);
-            //Bind de parameters vanuit de array.
+            //Bind the parameters from the array
             $stmt->bindParam(':familielid_id', $data['familielid_id']);
             $stmt->bindParam(':bedrag', $data['bedrag']);
             $stmt->bindParam(':type', $data['type']);
@@ -49,15 +49,14 @@ class PenningmeesterModel {
             throw new Exception("Error inserting contribution: " . $e->getMessage());
         }
     }
-
-    //Update een contributie.
+    //Update a contribution
     public function updateContributie($data) {
         try {
             $sql = "UPDATE contributies SET familielid_id = :familielid_id, bedrag = :bedrag, type = :type, betaaldatum = :betaaldatum, boekjaar_id = :boekjaar_id, aantekening = :aantekening
                     WHERE id = :id";
             $conn = $this->db->connect();
             $stmt = $conn->prepare($sql);
-            // Bind de parameters vanuit de array
+            //Bind the parameters from the array
             $stmt->bindParam(':familielid_id', $data['familielid_id']);
             $stmt->bindParam(':bedrag', $data['bedrag']);
             $stmt->bindParam(':type', $data['type']);
@@ -68,61 +67,60 @@ class PenningmeesterModel {
     
             $stmt->execute();
     
-            return true; // Geeft aan dat de update succesvol was
+            return true; //Indicates that the update was successful
         } catch (PDOException $e) {
             throw new Exception("Fout bij het bewerken van een contributie: " . $e->getMessage());
         }
     }
-    
-    //Verwijder een contributie.
+    //Delete a contribution
     public function verwijderContributie($id) {
         $conn = $this->db->connect();
         $sql = "DELETE FROM contributies WHERE id = :id";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     
-        //Voer de query uit en check of deze succesvol is.
+        //Execute the query and check if it was successful
         if ($stmt->execute()) {
             return true;
         } else {
-            throw new Exception("Er is een fout opgetreden bij het verwijderen van de contributie.");
+            throw new Exception("An error occurred while deleting the contribution.");
         }
     }
-    //Voeg een nieuw boekjaar toe.
+    //Add a new fiscal year
     public function addNieuwBoekjaar() {
         try {
             $conn = $this->db->connect(); 
-            //Haal het laatste jaar op.
+            //Retrieve the last year
             $sql = "SELECT MAX(jaar) AS laatste_jaar FROM boekjaren";
             $stmt = $conn->query($sql);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            $nieuwJaar = $result['laatste_jaar'] + 1; //Bereken het nieuwe jaar.
+            $nieuwJaar = $result['laatste_jaar'] + 1; //Calculate the new fiscal year
     
-            //Voeg het nieuwe jaar toe aan de boekjaren tabel.
+            //Add the new fiscal year to the fiscal_years table
             $sql2 = "INSERT INTO boekjaren (jaar) VALUES (:jaar)";
             $insertStmt = $conn->prepare($sql2);
             $insertStmt->execute(['jaar' => $nieuwJaar]);
     
-            //Return het nieuwe jaar zodat het verder gebruikt kan worden.
+            //Return the new fiscal year so it can be used
             return $nieuwJaar;  
         } catch (PDOException $e) {
-            throw new Exception("Fout bij het toevoegen van een boekjaar: " . $e->getMessage());
+            throw new Exception("Error adding a fiscal year: " . $e->getMessage());
         }
     }
-    //Haal alle boekjaren op.
+    //Retrieve all fiscal years
     public function getAllBoekjaren() {
         try {
             $sql = "SELECT id, jaar FROM boekjaren ORDER BY jaar DESC";
             $conn = $this->db->connect(); 
             $stmt = $conn->prepare($sql); 
             $stmt->execute();
-            //Haal alle resultaten op en retourneer ze.
+            //Retrieve all results and return them
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             throw new Exception("Error retrieving years: " . $e->getMessage());
         }
     }
-    //Haal alle familieleden op.
+    //Retrieve all family members
     public function getAllFamilieleden() {
         try {
             $sql = "SELECT id, naam FROM familieleden";  
@@ -134,7 +132,7 @@ class PenningmeesterModel {
             throw new Exception("Error retrieving family members: " . $e->getMessage());
         }
     }
-    //Haal een specifieke contributie op basis van het ID.
+    //Retrieve a specific contribution based on the ID
     public function getContributieById($id) {
         try { 
             $sql = "SELECT c.id, c.familielid_id, c.bedrag, c.type, c.betaaldatum, c.boekjaar_id, c.aantekening, f.naam AS familielid_naam
@@ -150,7 +148,7 @@ class PenningmeesterModel {
             throw new Exception("Error retrieving contribution: " . $e->getMessage());
         }
     }
-    //Haal contributies op per boekjaar, inclusief de naam van het familielid.
+    //Retrieve contributions per fiscal year, including the name of the family member
     public function getContributiesPerBoekjaar($boekjaar_id) {
         try {
             $sql = "SELECT c.*, f.naam 
@@ -162,20 +160,20 @@ class PenningmeesterModel {
             $stmt->bindParam(':boekjaar_id', $boekjaar_id);
             $stmt->execute();
     
-            //Haal de contributies op.
+            //Retrieve the contributions
             $contributies = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            //Bereken de totalen voor inkomsten, uitgaven en belastingen.
+            //Calculate the totals for income, expenses, and taxes
             $inkomsten_totaal = 0;
             $uitgaven_totaal = 0;
             $belastingen_totaal = 0;
-            //Bereken de totalen voor de verschillende types contributies.
+            //Calculate the totals for the different types of contributions
             foreach ($contributies as $contributie) {
-                if ($contributie['type'] == 'inkomsten') {
+                if ($contributie['type'] == 'income') {
                     $inkomsten_totaal += $contributie['bedrag'];
-                } elseif ($contributie['type'] == 'uitgaven') {
-                    $uitgaven_totaal -= $contributie['bedrag']; // Negatief bedrag afhalen van totaal
-                } elseif ($contributie['type'] == 'belastingen') {
-                    $belastingen_totaal -= $contributie['bedrag']; // Belastingen als uitgaven
+                } elseif ($contributie['type'] == 'expenses') {
+                    $uitgaven_totaal -= $contributie['bedrag']; //Subtract the negative amount from the total
+                } elseif ($contributie['type'] == 'taxes') {
+                    $belastingen_totaal -= $contributie['bedrag']; //Taxes as expenses
                 }
             }              
             return [
@@ -186,10 +184,10 @@ class PenningmeesterModel {
                 'totaal' => $inkomsten_totaal - $uitgaven_totaal - $belastingen_totaal
             ];   
         } catch (PDOException $e) {
-            echo "Fout bij ophalen contributies per boekjaar: " . $e->getMessage();
+            echo "Error retrieving contributions per fiscal year: " . $e->getMessage();
         }
     }
-        //Haal een boekjaar op op basis van id.
+        //Retrieve a fiscal year based on the ID
     public function getBoekjaarById($boekjaar_id) {
         $conn = $this->db->connect();
         $sql = "SELECT * FROM boekjaren WHERE id = :boekjaar_id";
@@ -198,9 +196,9 @@ class PenningmeesterModel {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    //Haal de korting op voor een familielid op basis van hun soort_lid_id.
+    //Retrieve the discount for a family member based on their type_member_id
     public function getKorting($familielid_id) {
-        //Haal het soort_lid_id op van het familielid.
+        //Retrieve the type_member_id of the family member
         $conn = $this->db->connect();
         $sql = "SELECT soort_lid_id FROM familieleden WHERE id = :familielid_id";
         $stmt = $conn->prepare($sql);
@@ -208,10 +206,10 @@ class PenningmeesterModel {
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
     
-        //Als het familielid bestaat, haal de korting op basis van soort_lid_id.
+        //If the family member exists, retrieve the discount based on the type_member_id
         if ($result) {
             $soort_lid_id = $result['soort_lid_id'];   
-            //Haal de korting op uit de soorten_lid tabel.
+            //Retrieve the discount from the type_member table
             $sql = "SELECT korting FROM soorten_lid WHERE id = :soort_lid_id";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':soort_lid_id', $soort_lid_id, PDO::PARAM_INT);
@@ -219,7 +217,7 @@ class PenningmeesterModel {
             $korting = $stmt->fetch(PDO::FETCH_ASSOC);
             return $korting ? $korting['korting'] : 0;
         }  
-        return 0; //Return 0 als het familielid niet gevonden is.
+        return 0; //Return 0 if the family member is not found
     }
 
 }

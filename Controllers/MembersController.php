@@ -1,8 +1,8 @@
 <?php
 
-//Modellen en database includen. 
-require_once dirname(__DIR__) . '/Models/LedenModel.php';
-require_once dirname(__DIR__) . '/Models/SecretarisModel.php';
+//Include models and database 
+require_once dirname(__DIR__) . '/Models/MembersModel.php';
+require_once dirname(__DIR__) . '/Models/SecretaryModel.php';
 require_once dirname(__DIR__) . '/Db.php';
 
 class LedenController {
@@ -14,91 +14,91 @@ class LedenController {
         $this->ledenModel = new LedenModel($db);
         $this->secretarisModel = new SecretarisModel($db);
     }
-    //Account bijwerken.
+    //Update account
     public function vernieuwAccount() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_account'])) {
             $newUsername = $_POST['gebruikersnaam'];
             $newPassword = $_POST['wachtwoord'];
             $userId = $_SESSION['user_id'];
     
-            //Update accountgegevens via het model.
+            //Update account details via the model
             $updateSuccess = $this->ledenModel->updateAccount($userId, $newUsername, $newPassword);
     
             if ($updateSuccess) {
-                $_SESSION['username'] = $newUsername; // Update de sessie
+                $_SESSION['username'] = $newUsername; //Update the session
                 header("Location: index.php?page=dashboard");
                 exit;
             } else {
-                //Foutmelding als accountupdate mislukt.
-                echo "<p>Er is een fout opgetreden bij het bijwerken van het account.</p>";
+                //Error message if account update fails
+                echo "<p>An error occurred while updating the account.</p>";
             }
         }
     }
 
-    //Leden overzicht.
+    //Members overview
     public function showLedenOverzicht() {   
     
         try {
-            //Haal de gegevens van alle leden op. 
+            //Retrieve the data of all members
             $leden = $this->ledenModel->getAllLeden();
             
-            //Toon de view voor ledenoverzicht.
-            include_once __DIR__ . '/../views/leden_overzicht.php';
-            // Als er geen leden zijn, geef een bericht weer in de view.
+            //Display the view for the member overview
+            include_once __DIR__ . '/../views/members_overview.php';
+            //If there are no members, display a message in the view
             if (empty($leden)) {
-                $errorMessage = "Geen ledengegevens beschikbaar.";
+                $errorMessage = "No member data available.";
             } else {
                 $errorMessage = null;
             } 
-            //Toon foutmelding bij ophalen leden.
+            //Display an error message when retrieving members
         } catch (Exception $e) {
-            echo "Er is een fout opgetreden bij het ophalen van de leden: " . $e->getMessage();
+            echo "An error occurred while retrieving the members: " . $e->getMessage();
         }
     }
-    //Lid details ophalen.
+    //Retrieve member details
     public function showLid($id) {
         $lid = $this->ledenModel->getLidById($id);
-        return $lid;    //Return lid om in de view te gebruiken
+        return $lid;    //Return the member to be used in the view
     }
-    //Alle leden ophalen.
+    //Retrieve all members
     public function getAllLeden() {
         return $this->ledenModel->getAllLeden();
     }
     
-    //Alle leden ophalen voor bewerken.
+    //Retrieve all members for editing
     public function getAllLedenBewerken() {
         try {
-            //Haal de gegevens van alle leden op. 
+            //Retrieve the data of all members 
             $leden = $this->ledenModel->getAllLedenBewerken();
             $roles = $this->secretarisModel->getRoles();
             $families = $this->secretarisModel->getFamilies(); 
 
-            //Toon de view voor leden bewerken.
-            include_once __DIR__ . '/../views/leden_bewerken.php';
-            // Als er geen leden zijn, geef een bericht weer in de view.
+            //Display the view for editing members
+            include_once __DIR__ . '/../views/member_management.php';
+            //If there are no members, display a message in the view
             if (empty($leden)) {
-                $errorMessage = "Geen ledengegevens beschikbaar.";
+                $errorMessage = "No member data available.";
             } else {
                 $errorMessage = null;
             } 
-            //Toon foutmelding bij ophalen leden.
+            //Display an error message when retrieving members
         } catch (Exception $e) {
-            echo "Er is een fout opgetreden bij het ophalen van de leden: " . $e->getMessage();
+            echo "An error occurred while retrieving the members: " . $e->getMessage();
         }
     }
-    //Dashboard weergave voor gebruiker.
+    //Dashboard view for the user
     public function showDashboard() {
-        // Verkrijg de user_id, username en role uit de sessie.
+        //Retrieve the user_id, username, and role from the session.
         $user_id = $_SESSION['user_id'];
         $gebruiker = $_SESSION['username'];
         $rol = $_SESSION['role'];
     
-        //Haal de familieleden met openstaande betalingen op (inclusief leden zonder betalingen).
+        //Retrieve the family members with outstanding payments (including members without payments)
         $leden = $this->ledenModel->getFamilieledenMetOpenstaandeBetalingen($user_id);
     
-        //Controleer of er familieleden zijn gevonden.
+        //Check if any family members were found
         if (!empty($leden)) {
-            //Bereken het totaal van openstaande betalingen.
+            //Calculate the total of outstanding payments
             $totaal_openstaande_betalingen = 0;
             foreach ($leden as $lid) {
                 if ($lid['bedrag'] !== null) {
@@ -106,12 +106,12 @@ class LedenController {
                 }
             }
         } else {
-            //Geen familieleden of betalingen gevonden.
-            $leden = []; //$leden naar lege array zetten om fouten in de view te voorkomen
+            //No family members or payments found
+            $leden = []; //Set $leden to an empty array to prevent errors in the view
             $totaal_openstaande_betalingen = 0;
         }
     
-        //Laad de dashboard view.
+        //Load the dashboard view
         include_once __DIR__ . '/../views/dashboard.php';
     }
 

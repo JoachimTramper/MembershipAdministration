@@ -1,58 +1,57 @@
 <?php
-//Start de sessie.
+//Start the session
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-//Include de benodigde modellen en controllers.
+//Include the necessary models and controllers
 require_once 'Db.php';
 require_once 'Models/LoginModel.php';
 require_once 'Controllers/LoginController.php';
-require_once 'Models/LedenModel.php';
-require_once 'Controllers/LedenController.php';
-require_once 'Models/SecretarisModel.php';
-require_once 'Controllers/SecretarisController.php';
-require_once 'Models/PenningmeesterModel.php';
-require_once 'Controllers/PenningmeesterController.php';
+require_once 'Models/MembersModel.php';
+require_once 'Controllers/MembersController.php';
+require_once 'Models/SecretaryModel.php';
+require_once 'Controllers/SecretaryController.php';
+require_once 'Models/TreasurerModel.php';
+require_once 'Controllers/TreasurerController.php';
 
-//Maak eenmalig controller-instanties.
+//Create controller instances once
 $loginController = new LoginController();
 $ledenController = new LedenController();
 $secretarisController = new SecretarisController();
 $penningmeesterController = new PenningmeesterController();
 
-//Verwerk POST-verzoeken die niet aan een specifieke pagina gebonden zijn.
+//Process POST requests that are not bound to a specific page
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     $loginController->handleLogin();
     exit;
 }
 
-//Routinglogica.
+//Routing logic
 if (isset($_GET['page'])) {
     $page = $_GET['page'];
 
     switch ($page) {
 
-        //Ledenoverzicht.
-        case 'ledenoverzicht':
+        //Members overview
+        case 'members_overview':
             $ledenController->showLedenOverzicht();
             break;
 
-        //Dashboard.
+        //Dashboard
         case 'dashboard':
             $ledenController->showDashboard();
             break;
 
-        //Accountbeheer.
-        case 'account':
+        //Account management
+        case 'account_management':
             $ledenController->vernieuwAccount();
-            include 'views/account_beheer.php';
+            include 'views/account_management.php';
             break;
 
-        //Leden bewerken.
-        case 'leden_bewerken':
+        //Update members
+        case 'member_management':
             $ledenController->getAllLedenBewerken();
-            //$families = $secretarisController->getFamilies();
             if (isset($_GET['action'])) {
                 $action = $_GET['action'];
 
@@ -72,7 +71,7 @@ if (isset($_GET['page'])) {
 
                     case 'bewerk':
                         if (isset($_GET['id'])) {
-                            $page = 'bewerk_lid';
+                            $page = 'update_member';
                         }
                         break;
 
@@ -97,18 +96,18 @@ if (isset($_GET['page'])) {
 
             break;
 
-        //Lid bewerken.
-        case 'bewerk_lid':
+        //Update member
+        case 'update_member':
             if (isset($_GET['id'])) {
                 $id = intval($_GET['id']);
                 $secretarisController->bewerkLid($id, $_POST);
             } else {
-                echo "Geen lid ID opgegeven!";
+                echo "No member ID provided!";
             }
             break;
 
-        //Contributieoverzicht.
-        case 'contributies_overzicht':
+        //Contributions overview
+        case 'contributions_overview':
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (isset($_POST['add_boekjaar'])) {
@@ -132,7 +131,7 @@ if (isset($_GET['page'])) {
 
                     case 'bewerk':
                         if (isset($_GET['id'])) {
-                            header("Location: index.php?page=bewerk_contributie&id=" . $_GET['id']);
+                            header("Location: index.php?page=update_contribution&id=" . $_GET['id']);
                             exit;
                         }
                         break;
@@ -140,41 +139,41 @@ if (isset($_GET['page'])) {
             }
             break;
 
-        //Bewerk contributie.
-        case 'bewerk_contributie':
+        //Update contribution
+        case 'update_contribution':
             if (isset($_GET['id'])) {
                 $id = intval($_GET['id']);
                 $penningmeesterController->wijzigContributie($id);
             } else {
-                echo "Geen contributie ID opgegeven!";
+                echo "No contribution ID provided!";
             }
             break;
 
-        //Boekjaar overzicht.
-        case 'boekjaar_overzicht':
+        //Fiscal year overview
+        case 'year_overview':
             if (isset($_GET['boekjaar_id']) && !empty($_GET['boekjaar_id'])) {
                 $boekjaar_id = intval($_GET['boekjaar_id']);
                 $penningmeesterController->showContributiesPerBoekjaar($boekjaar_id);
             } else {
-                echo "Geen boekjaar geselecteerd!";
+                echo "No fiscal year selected!";
                 exit;
             }
             break;
 
-        //Logout.
+        //Logout
         case 'logout':
             session_unset();
             session_destroy();
             header("Location: index.php");
             exit;
             
-        //Onbekende pagina.
+        //Unknown page
         default:
             include 'views/login.php';
             break;
     }
 } else {
-    //Geen page-parameter aanwezig.
+    //No page parameter present
     include 'views/login.php';
 }
 ?>

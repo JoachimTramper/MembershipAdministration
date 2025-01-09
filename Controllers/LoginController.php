@@ -1,6 +1,6 @@
 <?php
 
-//Model en database includen. 
+//Include model and database
 require_once 'Models/LoginModel.php';
 require_once 'Db.php'; 
 
@@ -12,35 +12,35 @@ class LoginController {
         $db = new Database();
         $this->loginModel = new LoginModel($db);
     }
-    //Functie om in te loggen. 
+    //Function to login
     public function handleLogin() {
-        //Sessie starten als deze nog niet actief is.
+        //Start session if it's inactive   
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        //Als het formulier wordt verzonden.
+        //If the form is being send
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-            //Verkrijg de gebruikersnaam en wachtwoord van het formulier.
+            //Retrieve the username and password from the form
             $username = $_POST['uname'];
             $password = $_POST['psw'];
 
-            //Roep de authenticate methode van het LoginModel aan.
+            //Call the authenticate method of the LoginModel
             $loginResult = $this->loginModel->authenticate($username, $password);
 
-            //Controleer of het resultaat een array is (succesvolle login).
+            //Check if the result is an array (successful login)
             if (is_array($loginResult)) {
-                //Sla gebruikersgegevens op in de sessie.
+                //Store user data in the session
                 $_SESSION['loggedIn'] = true;
                 $_SESSION['user_id'] = $loginResult['id'];
                 $_SESSION['username'] = $loginResult['gebruikersnaam'];
                 $_SESSION['role'] = $loginResult['rol_soort'];
-                //Redirecten naar dashboard. 
+                //Redirect to dashboard
                 header("Location: index.php?page=dashboard&id");
                 exit; 
             } else {
-                //Foutmelding voor geen succesvolle login. 
+                //Error message for unsuccessful login 
                 echo "<p>Error: " . $loginResult . "</p>";
-                header("Location: login.php"); //Terug naar de loginpagina redirecten. 
+                header("Location: Views/login.php"); //Redirect back to login page 
                 exit;
             }
         }

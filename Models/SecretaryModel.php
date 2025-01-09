@@ -8,12 +8,12 @@ class SecretarisModel {
     public function __construct($db) {
         $this->db = $db;
     }
-    //Voeg een lid toe aan de database.
+    //Add a member to the database
     public function voegLidToe($data) {
         try {
             $conn = $this->db->connect();
 
-            //Bepaal het juiste soort_lid_id.
+            //Determine the correct type_member_id
             $sqlSoortLid = "SELECT id 
                 FROM soorten_lid 
                 WHERE TIMESTAMPDIFF(YEAR, ?, CURDATE()) BETWEEN leeftijd_vanaf AND leeftijd_tot";
@@ -21,13 +21,13 @@ class SecretarisModel {
             $stmt->execute([$data['geboortedatum']]);
             $soortLidId = $stmt->fetchColumn();
 
-            //Voeg lid toe aan familieleden.
+            //Add member to family_members
             $sql = "INSERT INTO familieleden (familie_id, naam, geboortedatum, soort_lid_id) 
                 VALUES (?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
             $stmt->execute([$data['familie_id'], $data['naam'], $data['geboortedatum'], $soortLidId]);
     
-            //Voeg gebruiker toe aan gebruikers.
+            //Add user to users
             $sqlGebruiker = "INSERT INTO gebruikers (familieleden_id, gebruikersnaam, wachtwoord, rol) 
                 VALUES (LAST_INSERT_ID(), ?, ?, ?)";
             $stmt = $conn->prepare($sqlGebruiker);
@@ -38,10 +38,10 @@ class SecretarisModel {
             ]);   
             return $conn->lastInsertId();
         } catch (PDOException $e) {
-            throw new Exception("Fout bij het toevoegen van een lid: " . $e->getMessage());
+            throw new Exception("Error adding a member: " . $e->getMessage());
         }
     }
-    //Verwijder een lid.
+    //Delete a member
     public function verwijderLid($id) {
         try {
             $conn = $this->db->connect();
@@ -49,10 +49,10 @@ class SecretarisModel {
             $stmt = $conn->prepare($sql);
             $stmt->execute([$id]);
         } catch (PDOException $e) {
-            throw new Exception("Fout bij het verwijderen van een lid: " . $e->getMessage());
+            throw new Exception("Error deleting a member: " . $e->getMessage());
         }
     }
-    //Voeg een familie toe.
+    //Add a family
     public function voegFamilieToe($data) {
         try {
             $conn = $this->db->connect();
@@ -61,35 +61,35 @@ class SecretarisModel {
             $stmt->execute([$data['familie_naam'], $data['adres']]);
             return $conn->lastInsertId();
         } catch (PDOException $e) {
-            throw new Exception("Fout bij het toevoegen van een familie: " . $e->getMessage());
+            throw new Exception("Error adding a family: " . $e->getMessage());
         }
     }
-    //Verwijderen een familie.
+    //Delete a family
     public function deleteFamilie($familieId) {
         try {
             $conn = $this->db->connect(); 
             $sql = "DELETE FROM families WHERE id = ?";
             $stmt = $conn->prepare($sql);
             $stmt->execute([$familieId]);
-            //Controleer of er een rij is verwijderd.
+            //Check if a row has been deleted
             return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
-            throw new Exception("Fout bij het verwijderen van een familie: " . $e->getMessage());
+            throw new Exception("Error deleting a family: " . $e->getMessage());
         }
     }
-    //Haal alle families op.
+    //Retrieve all families
     public function getFamilies() {
         try {         
             $conn = $this->db->connect();
-            $sql = "SELECT id, naam, adres FROM families"; // Pas de query aan als nodig
+            $sql = "SELECT id, naam, adres FROM families"; 
             $stmt = $conn->prepare($sql);
             $stmt->execute(); 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            throw new Exception("Fout bij het ophalen van families: " . $e->getMessage());
+            throw new Exception("Error retrieving families: " . $e->getMessage());
         }
     }
-    //Haal alle rollen op.
+    //Retrieve all roles
     public function getRoles() {
         try {
             $conn = $this->db->connect();
@@ -98,13 +98,13 @@ class SecretarisModel {
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            throw new Exception("Fout bij het ophalen van rollen: " . $e->getMessage());
+            throw new Exception("Error retrieving roles: " . $e->getMessage());
         }
     }
-    //Werk de gegevens van een lid bij.
+    //Update the details of a member
     public function updateLid($data) {
         try {
-            //Familieleden bijwerken.
+            //Update family members
             $conn = $this->db->connect();
             $sqlFamilie = "UPDATE familieleden 
                            SET familie_id = ?, naam = ?, geboortedatum = ?
@@ -116,7 +116,7 @@ class SecretarisModel {
                 $data['geboortedatum'],
                 $data['id'] 
             ]);  
-            //Gebruikers bijwerken.
+            //Update users
             $sqlGebruiker = "UPDATE gebruikers 
                              SET gebruikersnaam = ?, wachtwoord = ?, rol = ? 
                              WHERE familieleden_id = ?";
@@ -127,7 +127,7 @@ class SecretarisModel {
                 $data['rol'],
                 $data['id'] 
             ]);
-            return true; // Geeft aan dat de update succesvol was
+            return true; //Indicate that the update was successful
         } catch (PDOException $e) {
             throw new Exception("Fout bij het bewerken van een lid: " . $e->getMessage());
         }

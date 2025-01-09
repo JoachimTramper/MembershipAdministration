@@ -3,42 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $pageTitle ?? 'Ledenadministratie'; ?></title>
+    <title><?php echo $pageTitle ?? 'Membership Administration'; ?></title>
     <link rel="stylesheet" href="../css/global.css">
 </head>
 <body>
-    <!-- Header sectie. -->
+    <!-- Header section -->
     <header class="header">
         <nav>
             <div>
-                <!-- Logo of titel van de website. -->
-                <h1>Ledenadministratie Biljartvereniging 'De Kromme Keu'</h1>
+                <!-- Logo or title of the website -->
+                <h1>Member Administration of Billiard Club 'The Crooked Cue'</h1>
             </div>
 
-            <!-- Navigatiemenu. -->
+            <!-- Navigation menu -->
             <ul>
-                <!-- Link naar het dashboard. -->
+                <!-- Link to 'Dashboard' -->
                 <li><a href="../index.php?page=dashboard&id<?= $_SESSION['user_id']; ?>">Dashboard</a></li>
 
-                <!-- Link naar het ledenoverzicht. -->
-                <li><a href="../index.php?page=ledenoverzicht">Leden Overzicht</a></li>
+                <!-- Link to 'Members Overview' -->
+                <li><a href="../index.php?page=members_overview">Members Overview</a></li>
 
-                <!-- Link naar accountbeheer. -->
-                <li><a href="../index.php?page=account">Account Beheer</a></li>
+                <!-- Link to 'Account Management' -->
+                <li><a href="../index.php?page=account_management">Account Management</a></li>
 
-                <!-- Link naar 'Leden Bewerken' alleen voor secretaris of admin. -->
-                <?php if (isset($_SESSION['role']) && ($_SESSION['role'] == 'secretaris' || $_SESSION['role'] == 'admin')): ?>
-                <li><a href="../index.php?page=leden_bewerken&id=<?= $_SESSION['user_id']; ?>">Leden Bewerken</a></li>
+                <!-- Link to 'Member Management' only for secretary or admin -->
+                <?php if (isset($_SESSION['role']) && ($_SESSION['role'] == 'secretary' || $_SESSION['role'] == 'admin')): ?>
+                <li><a href="../index.php?page=member_management&id=<?= $_SESSION['user_id']; ?>">Member Management</a></li>
                 <?php endif; ?>         
-                <!-- Link naar 'Contributies' alleen voor penningmeester of admin. -->
-                <?php if (isset($_SESSION['role']) && ($_SESSION['role'] == 'penningmeester' || $_SESSION['role'] == 'admin')): ?>
-                <li><a href="../index.php?page=contributies_overzicht&id<?= $_SESSION['user_id']; ?>">Contributies</a></li>
+                <!-- Link to 'Contributions' only for treasurer or admin. -->
+                <?php if (isset($_SESSION['role']) && ($_SESSION['role'] == 'treasurer' || $_SESSION['role'] == 'admin')): ?>
+                <li><a href="../index.php?page=contributions_overview&id<?= $_SESSION['user_id']; ?>">Contributions</a></li>
                 <?php endif; ?> 
 
-                <!-- Link naar de logoutpagina. -->
+                <!-- Link to logout page-->
                 <li><a href="../index.php?page=logout">Logout</a></li>
             </ul>
         </nav>
     </header>
-    <!-- Hoofdinhoud van de pagina. -->
+    <!-- Main content of the page -->
 <main>

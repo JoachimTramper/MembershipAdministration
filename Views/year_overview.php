@@ -1,12 +1,12 @@
 <?php
-//Start de sessie als deze nog niet is gestart.
+//Start the session if it has not already been started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-//Controleer of de gebruiker is ingelogd met de juiste rol. 
-if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'penningmeester' && $_SESSION['role'] !== 'admin')) {
-    //Gebruiker is niet ingelogd of heeft geen toegang.
+//Check if the user is logged in with the correct role
+if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'treasurer' && $_SESSION['role'] !== 'admin')) {
+    //User is not logged in or does not have access
     header('Location: index.php?page=login');
     exit;
 }
@@ -15,14 +15,14 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'penningmeester' && $_SE
 <?php include('header.php'); ?>
 <link rel="stylesheet" href="../css/global.css">
 
-<h1>Overzicht van contributies voor boekjaar: <?= htmlspecialchars($boekjaar['jaar']) ?></h1>
+<h1>Overview of contributions for fiscal year: <?= htmlspecialchars($boekjaar['jaar']) ?></h1>
 
-<!-- Formulier voor het selecteren van een boekjaar. -->
+<!-- Form for selecting a fiscal year -->
 <form method="GET" action="<?= htmlspecialchars($_SERVER['PHP_SELF']); ?>" class="dropdown-form">
-    <input type="hidden" name="page" value="boekjaar_overzicht"> 
-    <label for="boekjaar_id">Selecteer een boekjaar:</label>
+    <input type="hidden" name="page" value="year_overview"> 
+    <label for="boekjaar_id">Select a fiscal year:</label>
     <select name="boekjaar_id" id="boekjaar_id" onchange="this.form.submit()">
-        <option value="">Selecteer een boekjaar</option>
+        <option value="">Select a fiscal year</option>
         <?php foreach ($boekjaren as $boekjaar_optie): ?>
             <option value="<?= htmlspecialchars($boekjaar_optie['id']) ?>" <?= isset($_GET['boekjaar_id']) && $_GET['boekjaar_id'] == $boekjaar_optie['id'] ? 'selected' : '' ?>>
                 <?= htmlspecialchars($boekjaar_optie['jaar']) ?>
@@ -31,29 +31,29 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'penningmeester' && $_SE
     </select>
 </form>
 
-        <!-- Toon de financiële gegevens: inkomsten, uitgaven, belastingen en totaal. -->
-        <p>Inkomsten: € <?= number_format(htmlspecialchars($inkomsten_totaal), 2, ',', '.') ?></p>
-        <p>Uitgaven: € <?= number_format(htmlspecialchars($uitgaven_totaal), 2, ',', '.') ?></p>
-        <p>Belastingen: € <?= number_format(htmlspecialchars($belastingen_totaal), 2, ',', '.') ?></p>
-        <p>Totaal: € <?= number_format(htmlspecialchars($totaal), 2, ',', '.') ?></p>
+        <!-- Display the financial data: income, expenses, taxes, and total -->
+        <p>Income: € <?= number_format(htmlspecialchars($inkomsten_totaal), 2, ',', '.') ?></p>
+        <p>Expenses: € <?= number_format(htmlspecialchars($uitgaven_totaal), 2, ',', '.') ?></p>
+        <p>Taxes: € <?= number_format(htmlspecialchars($belastingen_totaal), 2, ',', '.') ?></p>
+        <p>Total: € <?= number_format(htmlspecialchars($totaal), 2, ',', '.') ?></p>
           
 <?php if ($contributies): ?>
-    <!-- Toon de contributies in een tabel als er contributies zijn. -->
+    <!-- Display the contributions in a table if there are any contributions -->
     <hr>
     <table>
         <thead>
             <tr>
-                <th>Contributie ID</th>
-                <th>Familielid</th>
-                <th>Bedrag</th>
+                <th>Contribution ID</th>
+                <th>Family Member</th>
+                <th>Amount</th>
                 <th>Type</th>
-                <th>Betaaldatum</th>
-                <th>Aantekening</th>
+                <th>Payment Date</th>
+                <th>Note</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($contributies as $contributie): ?>
-                <!-- Toon elke contributie in een rij. -->
+                <!-- Display each contribution in a row -->
                 <tr>
                     <td><?= htmlspecialchars($contributie['id']) ?></td>
                     <td><?= htmlspecialchars($contributie['naam']) ?></td>
@@ -66,7 +66,7 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'penningmeester' && $_SE
         </tbody>
     </table>
 <?php else: ?>
-    <!-- Als er geen contributies zijn, toon dan een melding. -->
-    <p>Geen contributies gevonden voor dit boekjaar.</p>
+    <!-- If there are no contributions, display a message -->
+    <p>No contributions found for this fiscal year.</p>
 <?php endif; ?>
 <?php include('footer.php'); ?>

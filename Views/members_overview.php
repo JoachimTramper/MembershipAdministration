@@ -1,34 +1,34 @@
 <?php
-//Start de sessie indien deze nog niet gestart is.
+//Start the session if it has not already been started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-//Controleer of de gebruiker ingelogd is.
+//Check if the user is logged in
 if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] !== true) {
-    // Als de gebruiker niet ingelogd is, doorverwijzen naar loginpagina.
+    //If the user is not logged in, redirect to the login page
     header("Location: login.php");
     exit;
 }
 include('header.php'); ?>
 
 <link rel="stylesheet" href="../css/global.css">
-<h1>Leden overzicht</h1>
-<!-- Tabel voor het weergeven van ledeninformatie. -->
+<h1>Members Overview</h1>
+<!-- Table for displaying member information -->
 <table>
     <thead>
         <tr>
             <th>ID</th>
-            <th>Naam</th>
-            <th>Adres</th>
-            <th>Soort Lid</th>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Member Type</th>
         </tr>
     </thead>
     <tbody>
-        <!-- Controleer of er ledengegevens zijn. -->
+        <!-- Check if there is member data -->
         <?php if (isset($leden) && !empty($leden)): ?>
             <?php foreach ($leden as $lid): ?>
-                <!-- Weergeef elk lid in een nieuwe rij. -->
+                <!-- Display each member in a new row -->
                 <tr>
                     <td><?php echo htmlspecialchars($lid['id']); ?></td>
                     <td><?php echo htmlspecialchars($lid['naam']); ?></td>
@@ -37,9 +37,9 @@ include('header.php'); ?>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>
-            <!-- Toon een bericht als er geen ledengegevens beschikbaar zijn. -->
+            <!-- Display a message if no member data is available -->
             <tr>
-                <td colspan="3">Geen ledengegevens beschikbaar.</td>
+                <td colspan="3">No member data available.</td>
             </tr>
         <?php endif; ?>
     </tbody>
