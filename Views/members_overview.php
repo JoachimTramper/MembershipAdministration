@@ -31,9 +31,9 @@ include('header.php'); ?>
                 <!-- Display each member in a new row -->
                 <tr>
                     <td><?php echo htmlspecialchars($lid['id']); ?></td>
-                    <td><?php echo htmlspecialchars($lid['naam']); ?></td>
-                    <td><?php echo htmlspecialchars($lid['adres']); ?></td>
-                    <td><?php echo htmlspecialchars($lid['soort_lid']); ?></td>
+                    <td><?php echo htmlspecialchars($lid['name']); ?></td>
+                    <td><?php echo htmlspecialchars($lid['address']); ?></td>
+                    <td><?php echo htmlspecialchars($lid['member_type']); ?></td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>

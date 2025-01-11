@@ -19,41 +19,41 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'secretary' && $_SESSION
 
 <!-- Display the details of the member -->
 <p><strong>ID:</strong> <?= htmlspecialchars($lid['id']) ?></p>
-<p><strong>Name:</strong> <?= htmlspecialchars($lid['naam']) ?></p>
+<p><strong>Name:</strong> <?= htmlspecialchars($lid['name']) ?></p>
 
 <!-- Form for editing member details -->
 <form action="index.php?page=update_member&id=<?= $lid['id'] ?>" method="POST">
     <!-- Input field for name -->
-    <label for="naam">Name:</label>
-    <input type="text" name="naam" id="naam" value="<?= htmlspecialchars($lid['naam']) ?>" required>
+    <label for="name">Name:</label>
+    <input type="text" name="name" id="name" value="<?= htmlspecialchars($lid['name']) ?>" required>
 
     <!-- Input field for address -->
-    <label for="adres">Address:</label>
-    <input type="text" name="adres" id="adres" value="<?= htmlspecialchars($lid['adres']) ?>" required>
+    <label for="address">Address:</label>
+    <input type="text" name="address" id="address" value="<?= htmlspecialchars($lid['address']) ?>" required>
 
     <!-- Input field for date of birth -->
-    <label for="geboortedatum">Date of birth:</label>
-    <input type="date" name="geboortedatum" id="geboortedatum" value="<?= htmlspecialchars($lid['geboortedatum']) ?>" required>
+    <label for="dob">Date of birth:</label>
+    <input type="date" name="dob" id="dob" value="<?= htmlspecialchars($lid['dob']) ?>" required>
 
     <!-- Input field for username -->
-    <label for="gebruikersnaam">Username:</label>
-    <input type="text" name="gebruikersnaam" id="gebruikersnaam" value="<?= htmlspecialchars($lid['gebruikersnaam']) ?>" required>
+    <label for="username">Username:</label>
+    <input type="text" name="username" id="username" value="<?= htmlspecialchars($lid['username']) ?>" required>
 
     <!-- Input field for password -->
-    <label for="wachtwoord">Password:</label>
-    <input type="password" name="wachtwoord" id="wachtwoord" value="<?= htmlspecialchars($lid['wachtwoord']) ?>">
+    <label for="password">Password:</label>
+    <input type="password" name="password" id="password" value="<?= htmlspecialchars($lid['password']) ?>">
 
     <!-- Input field for family ID. -->
-    <label for="familie_id">Family ID:</label>
-    <input type="text" name="familie_id" id="familie_id" value="<?= htmlspecialchars($lid['familie_id']) ?>" required>
+    <label for="family_id">Family ID:</label>
+    <input type="text" name="family_id" id="family_id" value="<?= htmlspecialchars($lid['family_id']) ?>" required>
 
     <!-- Dropdown for role -->
-    <label for="rol">Role:</label>
-    <select name="rol" id="rol">
-        <option value="1" <?= $lid['rol'] == 1 ? 'selected' : '' ?>>Admin</option>
-        <option value="2" <?= $lid['rol'] == 2 ? 'selected' : '' ?>>Secretary</option>
-        <option value="3" <?= $lid['rol'] == 3 ? 'selected' : '' ?>>Treasurer</option>
-        <option value="4" <?= $lid['rol'] == 4 ? 'selected' : '' ?>>Member</option>
+    <label for="role">Role:</label>
+    <select name="role" id="role">
+        <option value="1" <?= $lid['role'] == 1 ? 'selected' : '' ?>>Admin</option>
+        <option value="2" <?= $lid['role'] == 2 ? 'selected' : '' ?>>Secretary</option>
+        <option value="3" <?= $lid['role'] == 3 ? 'selected' : '' ?>>Treasurer</option>
+        <option value="4" <?= $lid['role'] == 4 ? 'selected' : '' ?>>Member</option>
     </select>
 
     <!-- Save button -->

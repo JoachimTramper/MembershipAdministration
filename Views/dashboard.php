@@ -30,11 +30,11 @@ include 'header.php';
         <tbody>
             <?php foreach ($leden as $lid): ?>
                 <tr>
-                    <td><?= htmlspecialchars($lid['naam']) ?></td>
+                    <td><?= htmlspecialchars($lid['name']) ?></td>
                     <td>
-                        <?php if ($lid['bedrag'] !== null): ?>
+                        <?php if ($lid['amount'] !== null): ?>
                             <!-- If there is an outstanding amount, display it with a euro symbol and format it as currency -->
-                            € <?= number_format($lid['bedrag'], 2, ',', '.') ?>
+                            € <?= number_format($lid['amount'], 2, ',', '.') ?>
                         <?php else: ?>
                             <!-- If there is no outstanding amount, display an alternative message -->
                             No outstanding payment

@@ -16,10 +16,10 @@ class LoginModel
         $conn = $this->db->connect();
         //Prepare the SQL query to retrieve the user and role
         $stmt = $conn->prepare(
-            "SELECT g.id, g.gebruikersnaam, g.wachtwoord, r.rol_soort 
-            FROM gebruikers g 
-            JOIN rol r ON g.rol = r.id 
-            WHERE g.gebruikersnaam = :username");
+            "SELECT u.id, u.username, u.password, r.role_type
+            FROM users u 
+            JOIN roles r ON u.role = r.id 
+            WHERE u.username = :username");
         //Bind the username parameter to the query
         $stmt->bindParam(':username', $username, PDO::PARAM_STR);
         //Execute query
@@ -29,7 +29,7 @@ class LoginModel
             //Retrieve the user data
             $user = $stmt->fetch(PDO::FETCH_ASSOC);         
             //Compare the entered password with the stored password
-            if (password_verify($password, $user['wachtwoord'])) {
+            if (password_verify($password, $user['password'])) {
                 //Password is correct, return the user data
                 return $user;
             } else {

@@ -15,43 +15,43 @@ include('header.php');
 
 <link rel="stylesheet" href="../css/global.css">
 <!-- Form to add a new member -->
-<h1>Update Members</h1>
+<h1>Member Management</h1>
 <h3>Add New Member</h3>
 <form method="post" action="index.php?page=member_management&action=toevoegen">
-    <label for="naam">Name:</label>
-    <input type="text" name="naam" required>
+    <label for="name">Name:</label>
+    <input type="text" name="name" required>
 
-    <label for="adres">Address:</label>
-    <input type="text" name="adres" required>
+    <label for="address">Address:</label>
+    <input type="text" name="address" required>
 
-    <label for="geboortedatum">Date of birth:</label>
-    <input type="date" name="geboortedatum" required>
+    <label for="dob">Date of birth:</label>
+    <input type="date" name="dob" required>
 
-    <label for="gebruikersnaam">Username:</label>
-    <input type="text" name="gebruikersnaam" required>
+    <label for="username">Username:</label>
+    <input type="text" name="username" required>
 
-    <label for="wachtwoord">Password:</label>
-    <input type="password" name="wachtwoord" required>
+    <label for="password">Password:</label>
+    <input type="password" name="password" required>
 
     <!-- Dropdown for existing family -->
-    <label for="familie_id">Family:</label>
-    <select name="familie_id">
+    <label for="family_id">Family:</label>
+    <select name="family_id">
         <option value="">Family</option>
         <?php
         //Retrieve families
         foreach ($families as $familie) {
             //Display name and address together in the dropdown
-            echo "<option value='{$familie['id']}'>" . htmlspecialchars($familie['naam']) . " - " . htmlspecialchars($familie['adres']) . "</option>";
+            echo "<option value='{$familie['id']}'>" . htmlspecialchars($familie['name']) . " - " . htmlspecialchars($familie['address']) . "</option>";
         }
         ?>
     </select>
 
-    <label for="rol">Role:</label>
-    <select name="rol" required>
+    <label for="role">Role:</label>
+    <select name="role" required>
         <?php
     //Retrieve the roles from the roles table
         foreach ($roles as $role) {
-            echo "<option value='" . $role['id'] . "'>" . $role['rol_soort'] . "</option>";
+            echo "<option value='" . $role['id'] . "'>" . $role['role_type'] . "</option>";
         }
     ?>
     </select>
@@ -62,11 +62,11 @@ include('header.php');
 <!-- Form to add a new family -->
 <h3>Add Family</h3>
 <form method="post" action="index.php?page=member_management&action=toevoegen_familie">
-    <label for="familie_naam">Name:</label>
-    <input type="text" name="familie_naam" placeholder="Naam" required>
+    <label for="family_name">Name:</label>
+    <input type="text" name="family_name" placeholder="Name" required>
 
-    <label for="nieuwe_familie_adres">Address:</label>
-    <input type="text" name="nieuwe_familie_adres" placeholder="Adres" required>
+    <label for="new_family_address">Address:</label>
+    <input type="text" name="new_family_address" placeholder="Address" required>
 
     <button type="submit">Add family</button>
 </form>
@@ -74,13 +74,13 @@ include('header.php');
 <!-- Form to delete a family -->
 <h3>Delete Family</h3>
 <form method="post" action="index.php?page=member_management&action=verwijder_familie">
-    <input type="hidden" name="familie_id" value="<?= $familie['id'] ?>">
-    <label for="familie_id">Select a family:</label>
-    <select name="familie_id" required>
+    <input type="hidden" name="family_id" value="<?= $familie['id'] ?>">
+    <label for="family_id">Select a family:</label>
+    <select name="family_id" required>
         <option value="">Choose a family</option>
         <?php
         foreach ($families as $familie) {
-            echo "<option value='{$familie['id']}'>" . htmlspecialchars($familie['naam']) . " - " . htmlspecialchars($familie['adres']) . "</option>";
+            echo "<option value='{$familie['id']}'>" . htmlspecialchars($familie['name']) . " - " . htmlspecialchars($familie['address']) . "</option>";
         }
         ?>
     </select>
@@ -110,14 +110,14 @@ include('header.php');
         <?php foreach ($leden as $lid): ?>
             <tr>
                 <td><?= htmlspecialchars($lid['id']) ?></td>
-                <td><?= htmlspecialchars($lid['naam']) ?></td>
-                <td><?= htmlspecialchars($lid['adres']) ?></td> 
-                <td><?= htmlspecialchars($lid['geboortedatum']) ?></td>
-                <td><?= htmlspecialchars($lid['gebruikersnaam']) ?></td>
+                <td><?= htmlspecialchars($lid['name']) ?></td>
+                <td><?= htmlspecialchars($lid['address']) ?></td> 
+                <td><?= htmlspecialchars($lid['dob']) ?></td>
+                <td><?= htmlspecialchars($lid['username']) ?></td>
                 <td>******</td> <!-- The password is not displayed in plaintext -->
-                <td><?= htmlspecialchars($lid['familie_id']) ?></td>
-                <td><?= htmlspecialchars($lid['soort_lid']) ?></td> 
-                <td><?= htmlspecialchars($lid['rol_soort']) ?></td>
+                <td><?= htmlspecialchars($lid['family_id']) ?></td>
+                <td><?= htmlspecialchars($lid['member_type']) ?></td> 
+                <td><?= htmlspecialchars($lid['role_type']) ?></td>
                 <td><a href="index.php?page=update_member&action=bewerk&id=<?= htmlspecialchars($lid['id']) ?>">Update</a></td>
                 <td><a href="index.php?page=member_management&action=verwijder&id=<?= $lid['id'] ?>" 
                 onclick="return confirm('First, adjust the person\'s contributions, remove the name and place it in the \'note\'. Click \'Cancel\' if you haven not done this yet, click \'OK\' to delete.')">Delete</a></td>

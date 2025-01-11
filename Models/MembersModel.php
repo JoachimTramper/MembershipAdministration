@@ -13,7 +13,7 @@ class LedenModel {
             //Establish a connection to the database
             $conn = $this->db->connect();
             //Prepare the SQL query to update the username and password
-            $stmt = $conn->prepare("UPDATE gebruikers SET gebruikersnaam = ?, wachtwoord = ? WHERE id = ?");
+            $stmt = $conn->prepare("UPDATE users SET username = ?, password = ? WHERE id = ?");
             //Execute the query with the new username and password (hashed)
             $stmt->execute([$newUsername, password_hash($newPassword, PASSWORD_DEFAULT), $userId]);
             return true;        //Successfully updated
@@ -31,11 +31,11 @@ class LedenModel {
                 echo "Database connection failed!<br>";
             }
             //SQL query to retrieve members
-            $sql = "SELECT fl.id, fl.naam, fa.adres, sl.soort_lid 
-            FROM familieleden fl
-            INNER JOIN families fa ON fl.familie_id = fa.id  
-            INNER JOIN soorten_lid sl ON fl.soort_lid_id = sl.id
-            ORDER BY fl.id ASC";
+            $sql = "SELECT fm.id, fm.name, fa.address, mt.member_type 
+            FROM family_members fm
+            INNER JOIN families fa ON fm.family_id = fa.id  
+            INNER JOIN member_types mt ON fm.member_type_id = mt.id
+            ORDER BY fm.id ASC";
             $conn = $this->db->connect();  
             $stmt = $conn->prepare($sql);
             //Execute the query 
@@ -55,10 +55,10 @@ class LedenModel {
     }
     //Retrieves a specific member based on the ID
     public function getLidById($id) {
-        $sql = "SELECT f.id, f.familie_id, f.naam, f.geboortedatum, f.soort_lid_id, g.gebruikersnaam, g.wachtwoord, g.rol, fam.adres
-                FROM familieleden f
-                JOIN gebruikers g ON f.id = g.familieleden_id
-                JOIN families fam ON f.familie_id = fam.id
+        $sql = "SELECT f.id, f.family_id, f.name, f.dob, f.member_type_id, u.username, u.password, u.role, fa.address
+                FROM family_members f
+                JOIN users u ON f.id = u.family_member_id
+                JOIN families fa ON f.family_id = fa.id
                 WHERE f.id = :id";        
         try {       
             $conn = $this->db->connect();  
@@ -77,12 +77,12 @@ class LedenModel {
     public function getAllLedenBewerken() {
         //SQL query to retrieve members for editing, including role, address, and membership type
         $sql = "SELECT 
-            f.id, f.naam, f.geboortedatum, f.soort_lid_id, g.gebruikersnaam, g.wachtwoord, g.rol, f.familie_id, fa.adres, sl.soort_lid, r.rol_soort
-        FROM familieleden f 
-        JOIN gebruikers g ON f.id = g.familieleden_id
-        JOIN families fa ON f.familie_id = fa.id
-        JOIN soorten_lid sl ON f.soort_lid_id = sl.id
-        JOIN rol r ON g.rol = r.id
+            f.id, f.name, f.dob, f.member_type_id, u.username, u.password, u.role, f.family_id, fa.address, mt.member_type, r.role_type
+        FROM family_members f 
+        JOIN users u ON f.id = u.family_member_id
+        JOIN families fa ON f.family_id = fa.id
+        JOIN member_types mt ON f.member_type_id = mt.id
+        JOIN roles r ON u.role = r.id
         ORDER BY f.id ASC"; 
         try {
             $conn = $this->db->connect();
@@ -106,7 +106,7 @@ class LedenModel {
         try {
             $conn = $this->db->connect();
             //Retrieve the family_id of the user
-            $query_familie_id = "SELECT familie_id FROM familieleden WHERE id = :gebruiker_id";
+            $query_familie_id = "SELECT family_id FROM family_members WHERE id = :gebruiker_id";
             $stmt_familie_id = $conn->prepare($query_familie_id);
             $stmt_familie_id->bindParam(':gebruiker_id', $gebruiker_id);
             $stmt_familie_id->execute();
@@ -118,13 +118,13 @@ class LedenModel {
             }
             //Retrieve all family members, including payments (if available)
             $query = "
-                SELECT f.id, f.naam, c.bedrag, c.betaaldatum
-                FROM familieleden f
-                LEFT JOIN contributies c ON f.id = c.familielid_id AND c.betaaldatum IS NULL
-                WHERE f.familie_id = :familie_id
+                SELECT f.id, f.name, c.amount, c.payment_date
+                FROM family_members f
+                LEFT JOIN contributions c ON f.id = c.family_member_id AND c.payment_date IS NULL
+                WHERE f.family_id = :family_id
             "; 
             $stmt = $conn->prepare($query);
-            $stmt->bindParam(':familie_id', $familie_id);
+            $stmt->bindParam(':family_id', $familie_id);
             $stmt->execute();
     
             return $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -32,8 +32,8 @@ class LoginController {
                 //Store user data in the session
                 $_SESSION['loggedIn'] = true;
                 $_SESSION['user_id'] = $loginResult['id'];
-                $_SESSION['username'] = $loginResult['gebruikersnaam'];
-                $_SESSION['role'] = $loginResult['rol_soort'];
+                $_SESSION['username'] = $loginResult['username'];
+                $_SESSION['role'] = $loginResult['role_type'];
                 //Redirect to dashboard
                 header("Location: index.php?page=dashboard&id");
                 exit; 

@@ -80,7 +80,7 @@ class SecretarisController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && $data) {
             $data['id'] = $id;
             //Validation of fields
-            $requiredFields = ['naam', 'adres', 'geboortedatum', 'gebruikersnaam', 'wachtwoord', 'familie_id', 'rol'];
+            $requiredFields = ['name', 'address', 'dob', 'username', 'password', 'family_id', 'role'];
             foreach ($requiredFields as $field) {
                 if (empty($data[$field])) {
                     throw new Exception("Field '$field' is mandatory!");

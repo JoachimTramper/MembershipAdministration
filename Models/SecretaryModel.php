@@ -15,26 +15,26 @@ class SecretarisModel {
 
             //Determine the correct type_member_id
             $sqlSoortLid = "SELECT id 
-                FROM soorten_lid 
-                WHERE TIMESTAMPDIFF(YEAR, ?, CURDATE()) BETWEEN leeftijd_vanaf AND leeftijd_tot";
+                FROM member_types 
+                WHERE TIMESTAMPDIFF(YEAR, ?, CURDATE()) BETWEEN age_from AND age_till";
             $stmt = $conn->prepare($sqlSoortLid);
             $stmt->execute([$data['geboortedatum']]);
             $soortLidId = $stmt->fetchColumn();
 
             //Add member to family_members
-            $sql = "INSERT INTO familieleden (familie_id, naam, geboortedatum, soort_lid_id) 
+            $sql = "INSERT INTO family_members (family_id, name, dob, member_type_id) 
                 VALUES (?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([$data['familie_id'], $data['naam'], $data['geboortedatum'], $soortLidId]);
+            $stmt->execute([$data['family_id'], $data['name'], $data['dob'], $soortLidId]);
     
             //Add user to users
-            $sqlGebruiker = "INSERT INTO gebruikers (familieleden_id, gebruikersnaam, wachtwoord, rol) 
+            $sqlGebruiker = "INSERT INTO users (family_member_id, username, password, role) 
                 VALUES (LAST_INSERT_ID(), ?, ?, ?)";
             $stmt = $conn->prepare($sqlGebruiker);
             $stmt->execute([
-                $data['gebruikersnaam'],
-                password_hash($data['wachtwoord'], PASSWORD_DEFAULT),
-                $data['rol']
+                $data['username'],
+                password_hash($data['password'], PASSWORD_DEFAULT),
+                $data['role']
             ]);   
             return $conn->lastInsertId();
         } catch (PDOException $e) {
@@ -45,7 +45,7 @@ class SecretarisModel {
     public function verwijderLid($id) {
         try {
             $conn = $this->db->connect();
-            $sql = "DELETE FROM familieleden WHERE id = ?";
+            $sql = "DELETE FROM family_members WHERE id = ?";
             $stmt = $conn->prepare($sql);
             $stmt->execute([$id]);
         } catch (PDOException $e) {
@@ -56,9 +56,9 @@ class SecretarisModel {
     public function voegFamilieToe($data) {
         try {
             $conn = $this->db->connect();
-            $sql = "INSERT INTO families (naam, adres) VALUES (?, ?)";
+            $sql = "INSERT INTO families (name, address) VALUES (?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([$data['familie_naam'], $data['adres']]);
+            $stmt->execute([$data['family_name'], $data['address']]);
             return $conn->lastInsertId();
         } catch (PDOException $e) {
             throw new Exception("Error adding a family: " . $e->getMessage());
@@ -81,7 +81,7 @@ class SecretarisModel {
     public function getFamilies() {
         try {         
             $conn = $this->db->connect();
-            $sql = "SELECT id, naam, adres FROM families"; 
+            $sql = "SELECT id, name, address FROM families"; 
             $stmt = $conn->prepare($sql);
             $stmt->execute(); 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -93,7 +93,7 @@ class SecretarisModel {
     public function getRoles() {
         try {
             $conn = $this->db->connect();
-            $sql = "SELECT id, rol_soort FROM rol";
+            $sql = "SELECT id, role_type FROM roles";
             $stmt = $conn->prepare($sql);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -106,25 +106,25 @@ class SecretarisModel {
         try {
             //Update family members
             $conn = $this->db->connect();
-            $sqlFamilie = "UPDATE familieleden 
-                           SET familie_id = ?, naam = ?, geboortedatum = ?
+            $sqlFamilie = "UPDATE family_members 
+                           SET family_id = ?, name = ?, dob = ?
                            WHERE id = ?";
             $stmt = $conn->prepare($sqlFamilie);
             $stmt->execute([
-                $data['familie_id'],
-                $data['naam'],
-                $data['geboortedatum'],
+                $data['family_id'],
+                $data['name'],
+                $data['dob'],
                 $data['id'] 
             ]);  
             //Update users
-            $sqlGebruiker = "UPDATE gebruikers 
-                             SET gebruikersnaam = ?, wachtwoord = ?, rol = ? 
-                             WHERE familieleden_id = ?";
+            $sqlGebruiker = "UPDATE users
+                             SET username = ?, password = ?, role = ? 
+                             WHERE family_member_id = ?";
             $stmt = $conn->prepare($sqlGebruiker);
             $stmt->execute([
-                $data['gebruikersnaam'],
-                password_hash($data['wachtwoord'], PASSWORD_DEFAULT),
-                $data['rol'],
+                $data['username'],
+                password_hash($data['password'], PASSWORD_DEFAULT),
+                $data['role'],
                 $data['id'] 
             ]);
             return true; //Indicate that the update was successful

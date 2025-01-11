@@ -30,19 +30,19 @@ class PenningmeesterController {
         try {
             //Retrieve the data from the form and store it in an array 
             $data = [
-                'familielid_id' => empty($_POST['familielid_id']) ? NULL : $_POST['familielid_id'],
-                'bedrag' => $_POST['bedrag'],
+                'family_member_id' => empty($_POST['family_member_id']) ? NULL : $_POST['family_member_id'],
+                'amount' => $_POST['amount'],
                 'type' => $_POST['type'],
-                'betaaldatum' => empty($_POST['betaaldatum']) ? NULL : $_POST['betaaldatum'],
-                'boekjaar_id' => $_POST['boekjaar_id'],
-                'aantekening' => $_POST['aantekening']
+                'payment_date' => empty($_POST['payment_date']) ? NULL : $_POST['payment_date'],
+                'fiscal_year_id' => $_POST['fiscal_year_id'],
+                'note' => $_POST['note']
             ];       
             //Calculate the amount if the family member has a discount and no amount has been entered
-            if ($data['familielid_id'] && empty($data['bedrag'])) {
+            if ($data['family_member_id'] && empty($data['amount'])) {
                 //Retrieve the discount for the family member
-                $kortingPercentage = $this->penningmeesterModel->getKorting($data['familielid_id']);    
+                $kortingPercentage = $this->penningmeesterModel->getKorting($data['family_member_id']);    
                 //The default amount is 100 euros; apply the discount
-                $data['bedrag'] = 100 * (1 - $kortingPercentage / 100);
+                $data['amount'] = 100 * (1 - $kortingPercentage / 100);
             }     
             //Add the contribution through the model
             $this->penningmeesterModel->addContributie($data);     
@@ -80,12 +80,12 @@ class PenningmeesterController {
             //Create an array with the data from the POST request
             $data = [
                 'id' => $_POST['id'],
-                'familielid_id' => $_POST['familielid_id'] ? $_POST['familielid_id'] : NULL, //Set NULL if no family_member_id is provided
-                'bedrag' => $_POST['bedrag'],
+                'family_member_id' => $_POST['family_member_id'] ? $_POST['family_member_id'] : NULL, //Set NULL if no family_member_id is provided
+                'amount' => $_POST['amount'],
                 'type' => $_POST['type'],
-                'betaaldatum' => $_POST['betaaldatum'] ? $_POST['betaaldatum'] : NULL, //Set NULL if no payment date is provided
-                'boekjaar_id' => $_POST['boekjaar_id'],
-                'aantekening' => $_POST['aantekening']
+                'payment_date' => $_POST['payment_date'] ? $_POST['payment_date'] : NULL, //Set NULL if no payment date is provided
+                'fiscal_year_id' => $_POST['fiscal_year_id'],
+                'note' => $_POST['note']
             ];  
             //Update the contribution through the model
             $success = $this->penningmeesterModel->updateContributie($data);     
@@ -123,7 +123,7 @@ class PenningmeesterController {
         try {
             //Check if a fiscal_year_id is provided. If not, try to retrieve it from the query string
             if ($boekjaar_id === null) {
-                $boekjaar_id = isset($_GET['boekjaar_id']) ? intval($_GET['boekjaar_id']) : null;
+                $boekjaar_id = isset($_GET['fiscal_year_id']) ? intval($_GET['fiscal_year_id']) : null;
             }
                 //Retrieve contributions per fiscal year
             if ($boekjaar_id) {
@@ -131,11 +131,11 @@ class PenningmeesterController {
                 $boekjaar = $this->penningmeesterModel->getBoekjaarById($boekjaar_id);
                 $boekjaren = $this->penningmeesterModel->getAllBoekjaren();
                 //Retrieve the contributions and totals from the result
-                $contributies = $contributiesData['contributies'];
-                $inkomsten_totaal = $contributiesData['inkomsten_totaal'];
-                $uitgaven_totaal = $contributiesData['uitgaven_totaal'];
-                $belastingen_totaal = $contributiesData['belastingen_totaal'];
-                $totaal = $contributiesData['totaal'];                
+                $contributies = $contributiesData['contributions'];
+                $income_total = $contributiesData['income_total'];
+                $expenses_total = $contributiesData['expenses_total'];
+                $taxes_total = $contributiesData['taxes_total'];
+                $total = $contributiesData['total'];                
             } else {
                 //Display an error if no fiscal year is selected
                 throw new Exception("No valid fiscal year selected.");

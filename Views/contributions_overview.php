@@ -17,13 +17,13 @@ include('header.php');
 <h1>Contribution overview</h1>
 <!-- Dropdown form for filtering by fiscal year -->
 <form method="GET" action="index.php?page=year_overview" class="dropdown-form dropdown-boekjaar-overzicht">
-    <label for="boekjaar_id"><b>Overview per fiscal year:</b></label>
+    <label for="fiscal_year_id"><b>Overview per fiscal year:</b></label>
     <input type="hidden" name="page" value="year_overview">
-    <select name="boekjaar_id" id="boekjaar_id" onchange="this.form.submit()">
+    <select name="fiscal_year_id" id="fiscal_year_id" onchange="this.form.submit()">
         <option value="">Select a fiscal year</option>
         <?php foreach ($boekjaren as $boekjaar): ?>
-            <option value="<?= htmlspecialchars($boekjaar['id']) ?>" <?= isset($_GET['boekjaar_id']) && $_GET['boekjaar_id'] == $boekjaar['id'] ? 'selected' : '' ?>>
-                <?= htmlspecialchars($boekjaar['jaar']) ?>
+            <option value="<?= htmlspecialchars($boekjaar['id']) ?>" <?= isset($_GET['fiscal_year_id']) && $_GET['fiscal_year_id'] == $boekjaar['id'] ? 'selected' : '' ?>>
+                <?= htmlspecialchars($boekjaar['year']) ?>
             </option>
         <?php endforeach; ?>
     </select>
@@ -32,34 +32,34 @@ include('header.php');
 <!-- Form to add a new contribution -->
 <h2>Add a new contribution</h2>
 <form action="index.php?page=contributions_overview" method="POST">
-    <label for="familielid_id">Family member:</label>
-    <select name="familielid_id" id="familielid_id">
+    <label for="family_member_id">Family member:</label>
+    <select name="family_member_id" id="family_member_id">
         <option value="">Select a family member (optional)</option>
-<?php foreach ($familieleden as $familielid) {echo "<option value='{$familielid['id']}'>" . htmlspecialchars($familielid['naam']) . "</option>";}?>
+<?php foreach ($familieleden as $familielid) {echo "<option value='{$familielid['id']}'>" . htmlspecialchars($familielid['name']) . "</option>";}?>
     </select>
 
-    <label for="bedrag">Amount:</label>
-    <input type="number" step="0.01" name="bedrag" id="bedrag" required>
+    <label for="amount">Amount:</label>
+    <input type="number" step="0.01" name="amount" id="amount" required>
 
     <label for="type">Type:</label>
     <select name="type" id="type">
-        <option value="inkomsten">Income</option>
-        <option value="uitgaven">Expenses</option>
-        <option value="belastingen">Taxes</option>
+        <option value="income">Income</option>
+        <option value="expenses">Expenses</option>
+        <option value="taxes">Taxes</option>
     </select>
 
-    <label for="betaaldatum">Payment date:</label>
-    <input type="date" name="betaaldatum" id="betaaldatum">
+    <label for="payment_date">Payment date:</label>
+    <input type="date" name="payment_date" id="payment_date">
 
         <!-- Dropdown for fiscal year -->
-        <label for="boekjaar_id">Fiscal year:</label>
-        <select name="boekjaar_id" required>
+        <label for="fiscal_year_id">Fiscal year:</label>
+        <select name="fiscal_year_id" required>
             <option value="">Select a fiscal year</option>
-<?php foreach ($boekjaren as $boekjaar) {echo "<option value='{$boekjaar['id']}'>" . htmlspecialchars($boekjaar['jaar']) . "</option>";}?>
+<?php foreach ($boekjaren as $boekjaar) {echo "<option value='{$boekjaar['id']}'>" . htmlspecialchars($boekjaar['year']) . "</option>";}?>
         </select>
 
-        <label for="aantekening">Note:</label>
-        <textarea name="aantekening" id="aantekening"></textarea>
+        <label for="note">Note:</label>
+        <textarea name="note" id="note"></textarea>
 
     <button type="submit" name="add_contributie">Add contribution</button>
 </form>
@@ -68,7 +68,7 @@ include('header.php');
 
 <!-- Form to add a new fiscal year -->
 <form method="post" action="index.php?page=contributions_overview">
-    <button type="submit" name="add_boekjaar" onclick="return confirmAddBookjaar()">Add new fiscal year</button>
+    <button type="submit" name="add_fiscal_year" onclick="return confirmAddBookjaar()">Add new fiscal year</button>
 </form>
 
 <script>
@@ -97,12 +97,12 @@ include('header.php');
     <tbody>
         <?php foreach ($contributies as $contributie): ?>
                 <td><?= htmlspecialchars($contributie['id']) ?></td>
-                <td><?= htmlspecialchars($contributie['familielid_naam']) ?></td>
-                <td>€ <?= number_format(htmlspecialchars($contributie['bedrag']), 2, ',', '.') ?></td></td>
+                <td><?= htmlspecialchars($contributie['family_member_name']) ?></td>
+                <td>€ <?= number_format(htmlspecialchars($contributie['amount']), 2, ',', '.') ?></td></td>
                 <td><?= htmlspecialchars($contributie['type']) ?></td>
-                <td><?= htmlspecialchars($contributie['betaaldatum'] ?? 'Not paid yet.') ?></td> <!-- Default text for when the payment has not been made yet -->
-                <td><?= htmlspecialchars($contributie['boekjaar_jaar']) ?></td>
-                <td><?= htmlspecialchars($contributie['aantekening']) ?></td>
+                <td><?= htmlspecialchars($contributie['payment_date'] ?? 'Not paid yet.') ?></td> <!-- Default text for when the payment has not been made yet -->
+                <td><?= htmlspecialchars($contributie['fiscal_year']) ?></td>
+                <td><?= htmlspecialchars($contributie['note']) ?></td>
                 <td style="text-align: center;">
                 <!-- Update -->
                 <a href="index.php?page=update_contribution&action=bewerk&id=<?= $contributie['id'] ?>">Update</a> |

@@ -151,8 +151,8 @@ if (isset($_GET['page'])) {
 
         //Fiscal year overview
         case 'year_overview':
-            if (isset($_GET['boekjaar_id']) && !empty($_GET['boekjaar_id'])) {
-                $boekjaar_id = intval($_GET['boekjaar_id']);
+            if (isset($_GET['fiscal_year_id']) && !empty($_GET['fiscal_year_id'])) {
+                $boekjaar_id = intval($_GET['fiscal_year_id']);
                 $penningmeesterController->showContributiesPerBoekjaar($boekjaar_id);
             } else {
                 echo "No fiscal year selected!";

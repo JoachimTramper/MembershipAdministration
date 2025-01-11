@@ -17,8 +17,8 @@ class LedenController {
     //Update account
     public function vernieuwAccount() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_account'])) {
-            $newUsername = $_POST['gebruikersnaam'];
-            $newPassword = $_POST['wachtwoord'];
+            $newUsername = $_POST['username'];
+            $newPassword = $_POST['password'];
             $userId = $_SESSION['user_id'];
     
             //Update account details via the model
@@ -101,8 +101,8 @@ class LedenController {
             //Calculate the total of outstanding payments
             $totaal_openstaande_betalingen = 0;
             foreach ($leden as $lid) {
-                if ($lid['bedrag'] !== null) {
-                    $totaal_openstaande_betalingen += $lid['bedrag'];
+                if ($lid['amount'] !== null) {
+                    $totaal_openstaande_betalingen += $lid['amount'];
                 }
             }
         } else {
