@@ -1,9 +1,9 @@
 <?php
 class Database {
     private $host = 'localhost';
-    private $db_name = 'ledenadministratie';
-    private $username = 'beheerderKeu';
-    private $password = 'Q[.p0[2R8NMq.0rF';
+    private $db_name = 'membership_administration';
+    private $username = 'adminCC';
+    private $password = '3[jrprSIGnPcg31H';
     private $conn;
 
     public function connect() {

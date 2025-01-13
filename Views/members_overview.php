@@ -26,14 +26,14 @@ include('header.php'); ?>
     </thead>
     <tbody>
         <!-- Check if there is member data -->
-        <?php if (isset($leden) && !empty($leden)): ?>
-            <?php foreach ($leden as $lid): ?>
+        <?php if (isset($members) && !empty($members)): ?>
+            <?php foreach ($members as $member): ?>
                 <!-- Display each member in a new row -->
                 <tr>
-                    <td><?php echo htmlspecialchars($lid['id']); ?></td>
-                    <td><?php echo htmlspecialchars($lid['name']); ?></td>
-                    <td><?php echo htmlspecialchars($lid['address']); ?></td>
-                    <td><?php echo htmlspecialchars($lid['member_type']); ?></td>
+                    <td><?php echo htmlspecialchars($member['id']); ?></td>
+                    <td><?php echo htmlspecialchars($member['name']); ?></td>
+                    <td><?php echo htmlspecialchars($member['address']); ?></td>
+                    <td><?php echo htmlspecialchars($member['member_type']); ?></td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>

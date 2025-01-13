@@ -17,9 +17,9 @@ require_once 'Controllers/TreasurerController.php';
 
 //Create controller instances once
 $loginController = new LoginController();
-$ledenController = new LedenController();
-$secretarisController = new SecretarisController();
-$penningmeesterController = new PenningmeesterController();
+$membersController = new MembersController();
+$secretaryController = new SecretaryController();
+$treasurerController = new TreasurerController();
 
 //Process POST requests that are not bound to a specific page
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
@@ -35,60 +35,60 @@ if (isset($_GET['page'])) {
 
         //Members overview
         case 'members_overview':
-            $ledenController->showLedenOverzicht();
+            $membersController->showMembersOverview();
             break;
 
         //Dashboard
         case 'dashboard':
-            $ledenController->showDashboard();
+            $membersController->showDashboard();
             break;
 
         //Account management
         case 'account_management':
-            $ledenController->vernieuwAccount();
+            $membersController->updateAccount();
             include 'views/account_management.php';
             break;
 
         //Update members
         case 'member_management':
-            $ledenController->getAllLedenBewerken();
+            $membersController->getAllMembersUpdate();
             if (isset($_GET['action'])) {
                 $action = $_GET['action'];
 
                 switch ($action) {
-                    case 'verwijder':
+                    case 'delete':
                         if (isset($_GET['id'])) {
-                            $secretarisController->verwijderLid($_GET['id']);
+                            $secretaryController->deleteMember($_GET['id']);
                         }
                         break;
 
-                    case 'toevoegen':
+                    case 'add':
                         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $data = $_POST;
-                            $secretarisController->voegLidToe($data);
+                            $secretaryController->addMember($data);
                         }
                         break;
 
-                    case 'bewerk':
+                    case 'update':
                         if (isset($_GET['id'])) {
                             $page = 'update_member';
                         }
                         break;
 
-                    case 'toevoegen_familie':
-                        if (isset($_POST['familie_naam'], $_POST['nieuwe_familie_adres'])) {
+                    case 'add_family':
+                        if (isset($_POST['family_name'], $_POST['new_family_address'])) {
                             $data = [
-                                'familie_naam' => $_POST['familie_naam'],
-                                'adres' => $_POST['nieuwe_familie_adres']
+                                'family_name' => $_POST['family_name'],
+                                'address' => $_POST['new_family_address']
                             ];
-                            $secretarisController->voegFamilieToe($data);
+                            $secretaryController->addFamily($data);
                         }
                         break;
 
-                    case 'verwijder_familie':
-                        if (isset($_POST['familie_id'])) {
-                            $familieId = $_POST['familie_id'];
-                            $secretarisController->verwijderFamilie($familieId);
+                    case 'delete_family':
+                        if (isset($_POST['family_id'])) {
+                            $familyId = $_POST['family_id'];
+                            $secretaryController->deleteFamily($familyId);
                         }
                         break;
                 }
@@ -100,7 +100,7 @@ if (isset($_GET['page'])) {
         case 'update_member':
             if (isset($_GET['id'])) {
                 $id = intval($_GET['id']);
-                $secretarisController->bewerkLid($id, $_POST);
+                $secretaryController->updateMember($id, $_POST);
             } else {
                 echo "No member ID provided!";
             }
@@ -110,26 +110,26 @@ if (isset($_GET['page'])) {
         case 'contributions_overview':
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                if (isset($_POST['add_boekjaar'])) {
-                    $penningmeesterController->voegNieuwBoekjaarToe();
-                } elseif (isset($_POST['add_contributie'])) {
-                    $penningmeesterController->voegContributieToe();
+                if (isset($_POST['add_fiscal_year'])) {
+                    $treasurerController->addNewFiscalYear();
+                } elseif (isset($_POST['add_contribution'])) {
+                    $treasurerController->addContribution();
                 }
             }
 
-            $penningmeesterController->showContributiesOverzicht();
+            $treasurerController->showContributionsOverview();
 
             if (isset($_GET['action'])) {
                 $action = $_GET['action'];
 
                 switch ($action) {
-                    case 'verwijder':
+                    case 'delete':
                         if (isset($_GET['id'])) {
-                            $penningmeesterController->verwijderContributie($_GET['id']);
+                            $treasurerController->deleteContribution($_GET['id']);
                         }
                         break;
 
-                    case 'bewerk':
+                    case 'update':
                         if (isset($_GET['id'])) {
                             header("Location: index.php?page=update_contribution&id=" . $_GET['id']);
                             exit;
@@ -143,7 +143,7 @@ if (isset($_GET['page'])) {
         case 'update_contribution':
             if (isset($_GET['id'])) {
                 $id = intval($_GET['id']);
-                $penningmeesterController->wijzigContributie($id);
+                $treasurerController->updateContribution($id);
             } else {
                 echo "No contribution ID provided!";
             }
@@ -152,8 +152,8 @@ if (isset($_GET['page'])) {
         //Fiscal year overview
         case 'year_overview':
             if (isset($_GET['fiscal_year_id']) && !empty($_GET['fiscal_year_id'])) {
-                $boekjaar_id = intval($_GET['fiscal_year_id']);
-                $penningmeesterController->showContributiesPerBoekjaar($boekjaar_id);
+                $fiscal_year_id = intval($_GET['fiscal_year_id']);
+                $treasurerController->showContributionsPerFiscalYear($fiscal_year_id);
             } else {
                 echo "No fiscal year selected!";
                 exit;

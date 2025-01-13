@@ -4,51 +4,51 @@ require_once dirname(__DIR__) . '/Models/SecretaryModel.php';
 require_once dirname(__DIR__) . '/Models/MembersModel.php';
 require_once dirname(__DIR__) . '/Db.php';
 
-class SecretarisController {
-    private $secretarisModel;
-    private $ledenModel;
+class SecretaryController {
+    private $secretaryModel;
+    private $membersModel;
 
     public function __construct() {
         $db = new Database();
-        $this->secretarisModel = new SecretarisModel($db);
-        $this->ledenModel = new LedenModel($db);
+        $this->secretaryModel = new SecretaryModel($db);
+        $this->membersModel = new MembersModel($db);
     }
 
     //Add a member
-    public function voegLidToe($data) {
+    public function addMember($data) {
         try {
             //Call the function in the model 
-            $this->secretarisModel->voegLidToe($data);
+            $this->secretaryModel->addMember($data);
             header("Location: index.php?page=member_management");
             exit;
         } catch (Exception $e) {
-            echo "Fout: " . $e->getMessage();
+            echo "Error adding member: " . $e->getMessage();
         }
     }
     //Delete a member
-    public function verwijderLid($id) {
+    public function deleteMember($id) {
         try {
-            $this->secretarisModel->verwijderLid($id);
+            $this->secretaryModel->deleteMember($id);
             header("Location: index.php?page=member_management");
             exit;
         } catch (Exception $e) {
-            echo "Fout: " . $e->getMessage();
+            echo "Error deleting member: " . $e->getMessage();
         }
     }
     //Add a family
-    public function voegFamilieToe($data) {
+    public function addFamily($data) {
         try {
-            $this->secretarisModel->voegFamilieToe($data);
+            $this->secretaryModel->addFamily($data);
             header("Location: index.php?page=member_management");
             exit;
         } catch (Exception $e) {
-            echo "Fout: " . $e->getMessage();
+            echo "Error: " . $e->getMessage();
         }
     }
     //Delete a family
-    public function verwijderFamilie($familieId) {
+    public function deleteFamily($familyId) {
         //Call the function in the model and assign it to a variable 
-        $result = $this->secretarisModel->deleteFamilie($familieId); 
+        $result = $this->secretaryModel->deleteFamily($familyId); 
         if ($result) {
             //Redirect to the edit members page after successful deletion (refresh)
             header("Location: index.php?page=member_management");
@@ -60,22 +60,22 @@ class SecretarisController {
     //Retrieve all families
     public function getFamilies() {
         try {
-            $families = $this->secretarisModel->getFamilies(); 
+            $families = $this->secretaryModel->getFamilies(); 
             return $families;  //Return the list of families
         } catch (Exception $e) {
-            die("Error while retrieving families: " . $e->getMessage());
+            die("Error retrieving families: " . $e->getMessage());
         }
     }
     //Retrieve all roles
     public function getRoles() {
         try {
-            $roles = $this->secretarisModel->getRoles();
+            $roles = $this->secretaryModel->getRoles();
             return $roles;
         } catch (Exception $e) {
-            die("Error while retrieving roles: " . $e->getMessage());
+            die("Error retrieving roles: " . $e->getMessage());
         }
     //Edit a member
-    }public function bewerkLid($id, $data = null) {
+    }public function updateMember($id, $data = null) {
         //Set data to null for both processing a POST request and retrieving data
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && $data) {
             $data['id'] = $id;
@@ -87,13 +87,13 @@ class SecretarisController {
                 }
             }
             //Updating data
-            $this->secretarisModel->updateLid($data);
+            $this->secretaryModel->updateMember($data);
             header("Location: index.php?page=member_management"); //Redirect on success
             exit;
         }    
         //Retrieve current data
-        $lid = $this->ledenModel->getLidById($id);
-        if (!$lid) {
+        $member = $this->membersModel->getMemberById($id);
+        if (!$member) {
             throw new Exception("Member not found!");
         } 
         include 'views/update_member.php'; //Display the form with existing data

@@ -5,24 +5,24 @@ require_once dirname(__DIR__) . '/Models/MembersModel.php';
 require_once dirname(__DIR__) . '/Models/SecretaryModel.php';
 require_once dirname(__DIR__) . '/Db.php';
 
-class LedenController {
-    private $ledenModel;
-    private $secretarisModel;
+class MembersController {
+    private $membersModel;
+    private $secretaryModel;
 
     public function __construct() {
         $db = new Database();
-        $this->ledenModel = new LedenModel($db);
-        $this->secretarisModel = new SecretarisModel($db);
+        $this->membersModel = new MembersModel($db);
+        $this->secretaryModel = new SecretaryModel($db);
     }
     //Update account
-    public function vernieuwAccount() {
+    public function updateAccount() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_account'])) {
             $newUsername = $_POST['username'];
             $newPassword = $_POST['password'];
             $userId = $_SESSION['user_id'];
     
             //Update account details via the model
-            $updateSuccess = $this->ledenModel->updateAccount($userId, $newUsername, $newPassword);
+            $updateSuccess = $this->membersModel->updateAccount($userId, $newUsername, $newPassword);
     
             if ($updateSuccess) {
                 $_SESSION['username'] = $newUsername; //Update the session
@@ -36,16 +36,16 @@ class LedenController {
     }
 
     //Members overview
-    public function showLedenOverzicht() {   
+    public function showMembersOverview() {   
     
         try {
             //Retrieve the data of all members
-            $leden = $this->ledenModel->getAllLeden();
+            $members = $this->membersModel->getAllMembers();
             
             //Display the view for the member overview
             include_once __DIR__ . '/../views/members_overview.php';
             //If there are no members, display a message in the view
-            if (empty($leden)) {
+            if (empty($members)) {
                 $errorMessage = "No member data available.";
             } else {
                 $errorMessage = null;
@@ -56,27 +56,27 @@ class LedenController {
         }
     }
     //Retrieve member details
-    public function showLid($id) {
-        $lid = $this->ledenModel->getLidById($id);
-        return $lid;    //Return the member to be used in the view
+    public function showMember($id) {
+        $member = $this->membersModel->getMemberById($id);
+        return $member;    //Return the member to be used in the view
     }
     //Retrieve all members
-    public function getAllLeden() {
-        return $this->ledenModel->getAllLeden();
+    public function getAllMembers() {
+        return $this->membersModel->getAllMembers();
     }
     
     //Retrieve all members for editing
-    public function getAllLedenBewerken() {
+    public function getAllMembersUpdate() {
         try {
             //Retrieve the data of all members 
-            $leden = $this->ledenModel->getAllLedenBewerken();
-            $roles = $this->secretarisModel->getRoles();
-            $families = $this->secretarisModel->getFamilies(); 
+            $members = $this->membersModel->getAllMembersUpdate();
+            $roles = $this->secretaryModel->getRoles();
+            $families = $this->secretaryModel->getFamilies(); 
 
             //Display the view for editing members
             include_once __DIR__ . '/../views/member_management.php';
             //If there are no members, display a message in the view
-            if (empty($leden)) {
+            if (empty($members)) {
                 $errorMessage = "No member data available.";
             } else {
                 $errorMessage = null;
@@ -90,25 +90,25 @@ class LedenController {
     public function showDashboard() {
         //Retrieve the user_id, username, and role from the session.
         $user_id = $_SESSION['user_id'];
-        $gebruiker = $_SESSION['username'];
-        $rol = $_SESSION['role'];
+        $user = $_SESSION['username'];
+        $role = $_SESSION['role'];
     
         //Retrieve the family members with outstanding payments (including members without payments)
-        $leden = $this->ledenModel->getFamilieledenMetOpenstaandeBetalingen($user_id);
+        $members = $this->membersModel->getFamilyMembersOutstandingPayments($user_id);
     
         //Check if any family members were found
-        if (!empty($leden)) {
+        if (!empty($members)) {
             //Calculate the total of outstanding payments
-            $totaal_openstaande_betalingen = 0;
-            foreach ($leden as $lid) {
-                if ($lid['amount'] !== null) {
-                    $totaal_openstaande_betalingen += $lid['amount'];
+            $total_outstanding_payments = 0;
+            foreach ($members as $member) {
+                if ($member['amount'] !== null) {
+                    $total_outstanding_payments += $member['amount'];
                 }
             }
         } else {
             //No family members or payments found
-            $leden = []; //Set $leden to an empty array to prevent errors in the view
-            $totaal_openstaande_betalingen = 0;
+            $members = []; //Set $members to an empty array to prevent errors in the view
+            $total_outstanding_payments = 0;
         }
     
         //Load the dashboard view

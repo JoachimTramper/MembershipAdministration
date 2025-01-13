@@ -13,9 +13,9 @@ include 'header.php';
 ?>
 
 <link rel="stylesheet" href="../css/global.css">
-<h1>Welcome, <?php echo htmlspecialchars($gebruiker); ?>! You are logged in as <?php echo htmlspecialchars($rol); ?>.</h1>
+<h1>Welcome, <?php echo htmlspecialchars($user); ?>! You are logged in as <?php echo htmlspecialchars($role); ?>.</h1>
 <h2>Overview of payments per family</h2>
-<?php if (empty($leden)): ?>
+<?php if (empty($members)): ?>
     <!-- Display this message if no family members or payments are found -->
     <p>No family members or payments found</p>
 <?php else: ?>
@@ -28,13 +28,13 @@ include 'header.php';
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($leden as $lid): ?>
+            <?php foreach ($members as $member): ?>
                 <tr>
-                    <td><?= htmlspecialchars($lid['name']) ?></td>
+                    <td><?= htmlspecialchars($member['name']) ?></td>
                     <td>
-                        <?php if ($lid['amount'] !== null): ?>
+                        <?php if ($member['amount'] !== null): ?>
                             <!-- If there is an outstanding amount, display it with a euro symbol and format it as currency -->
-                            € <?= number_format($lid['amount'], 2, ',', '.') ?>
+                            € <?= number_format($member['amount'], 2, '.', ',') ?>
                         <?php else: ?>
                             <!-- If there is no outstanding amount, display an alternative message -->
                             No outstanding payment
@@ -47,6 +47,6 @@ include 'header.php';
 <?php endif; ?>
 <br>
     <!-- Display the total of all outstanding payments -->
-    <h3>Total Outstanding Payments: € <?= number_format($totaal_openstaande_betalingen, 2, ',', '.') ?></h3>
+    <h3>Total Outstanding Payments: € <?= number_format($total_outstanding_payments, 2, '.', ',') ?></h3>
 </body>
 <?php include 'footer.php'; ?>

@@ -12,7 +12,7 @@
         <nav>
             <div>
                 <!-- Logo or title of the website -->
-                <h1>Member Administration of Billiard Club 'The Crooked Cue'</h1>
+                <h1>Membership Administration of Billiards Club 'The Crooked Cue'</h1>
             </div>
 
             <!-- Navigation menu -->

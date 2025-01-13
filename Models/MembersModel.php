@@ -1,6 +1,6 @@
 <?php
 
-class LedenModel {
+class MembersModel {
     private $db;
 
     //Constructor for database connection 
@@ -23,7 +23,7 @@ class LedenModel {
         }
     }
     //Function to retrieve all members
-    public function getAllLeden() {
+    public function getAllMembers() {
         try {
             $conn = $this->db->connect();
             if ($conn) {
@@ -41,20 +41,20 @@ class LedenModel {
             //Execute the query 
             $stmt->execute();
             //Fetch all results and store them in a variable
-            $leden = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $members = $stmt->fetchAll(PDO::FETCH_ASSOC);
             //If no members are found, display a message       
-            if (count($leden) === 0) {
+            if (count($members) === 0) {
                 echo "No members found!<br>";
             }                       
             //Return the results as an associative array
-            return $leden;
+            return $members;
         } catch (PDOException $e) {
             //Error handling for database issues
             throw new Exception("Database error: " . $e->getMessage());
         }
     }
     //Retrieves a specific member based on the ID
-    public function getLidById($id) {
+    public function getMemberById($id) {
         $sql = "SELECT f.id, f.family_id, f.name, f.dob, f.member_type_id, u.username, u.password, u.role, fa.address
                 FROM family_members f
                 JOIN users u ON f.id = u.family_member_id
@@ -74,7 +74,7 @@ class LedenModel {
         }
     } 
     //Retrieves all members for editing purposes
-    public function getAllLedenBewerken() {
+    public function getAllMembersUpdate() {
         //SQL query to retrieve members for editing, including role, address, and membership type
         $sql = "SELECT 
             f.id, f.name, f.dob, f.member_type_id, u.username, u.password, u.role, f.family_id, fa.address, mt.member_type, r.role_type
@@ -89,42 +89,40 @@ class LedenModel {
             $stmt = $conn->prepare($sql);
             $stmt->execute();
             //Fetch all results and store them in a variable
-            $leden = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $members = $stmt->fetchAll(PDO::FETCH_ASSOC);
             //If no members are found, display a message 
-            error_log("Members data: " . print_r($leden, true));    
-            if (count($leden) === 0) {
+            error_log("Members data: " . print_r($members, true));    
+            if (count($members) === 0) {
                 echo "No members found!<br>";
             }                       
             //Return the results as an associative array
-            return $leden;
+            return $members;
         } catch (PDOException $e) {
             throw new Exception("Error retrieving members: " . $e->getMessage());
         }
     }
     //Retrieves all family members, including any outstanding payments
-    public function getFamilieledenMetOpenstaandeBetalingen($gebruiker_id) {
+    public function getFamilyMembersOutstandingPayments($member_id) {
         try {
             $conn = $this->db->connect();
             //Retrieve the family_id of the user
-            $query_familie_id = "SELECT family_id FROM family_members WHERE id = :gebruiker_id";
-            $stmt_familie_id = $conn->prepare($query_familie_id);
-            $stmt_familie_id->bindParam(':gebruiker_id', $gebruiker_id);
-            $stmt_familie_id->execute();
-            $familie_id = $stmt_familie_id->fetchColumn();
+            $query_family_id = "SELECT family_id FROM family_members WHERE id = :member_id";
+            $stmt_family_id = $conn->prepare($query_family_id);
+            $stmt_family_id->bindParam(':member_id', $member_id);
+            $stmt_family_id->execute();
+            $family_id = $stmt_family_id->fetchColumn();
             
             //If no family_id is found, return an empty array
-            if (!$familie_id) {
+            if (!$family_id) {
                 return [];
             }
             //Retrieve all family members, including payments (if available)
-            $query = "
-                SELECT f.id, f.name, c.amount, c.payment_date
+            $query = "SELECT f.id, f.name, c.amount, c.payment_date
                 FROM family_members f
                 LEFT JOIN contributions c ON f.id = c.family_member_id AND c.payment_date IS NULL
-                WHERE f.family_id = :family_id
-            "; 
+                WHERE f.family_id = :family_id"; 
             $stmt = $conn->prepare($query);
-            $stmt->bindParam(':family_id', $familie_id);
+            $stmt->bindParam(':family_id', $family_id);
             $stmt->execute();
     
             return $stmt->fetchAll(PDO::FETCH_ASSOC);

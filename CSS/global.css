@@ -72,12 +72,12 @@ button:hover, .btn:hover {
     background-color: #777;
 }
 
-.dropdown-boekjaar-overzicht {
+.dropdown-fiscal-year-overview {
     display: flex;
     justify-content: flex-end;
     
 }
 
-.dropdown-boekjaar-overzicht label {
+.dropdown-fiscal-year-overview label {
     margin-right: 10px; /*Adds space between the label and the dropdown*/
 }

@@ -6,7 +6,7 @@
 <body>   
             <!--Titel boven het formulier.-->
     <div class="page-title">
-        Member Administration of Billiard Club 'The Crooked Cue'
+        Membership Administration of Billiard Club 'The Crooked Cue'
     </div>
 
     <div class="form-container">                <!--Wrapper to apply flexbox-->  

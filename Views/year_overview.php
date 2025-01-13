@@ -15,7 +15,7 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'treasurer' && $_SESSION
 <?php include('header.php'); ?>
 <link rel="stylesheet" href="../css/global.css">
 
-<h1>Overview of contributions for fiscal year: <?= htmlspecialchars($boekjaar['year']) ?></h1>
+<h1>Overview of contributions for fiscal year: <?= htmlspecialchars($fiscal_year['year']) ?></h1>
 
 <!-- Form for selecting a fiscal year -->
 <form method="GET" action="<?= htmlspecialchars($_SERVER['PHP_SELF']); ?>" class="dropdown-form">
@@ -23,21 +23,21 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'treasurer' && $_SESSION
     <label for="fiscal_year_id">Select a fiscal year:</label>
     <select name="fiscal_year_id" id="fiscal_year_id" onchange="this.form.submit()">
         <option value="">Select a fiscal year</option>
-        <?php foreach ($boekjaren as $boekjaar_optie): ?>
-            <option value="<?= htmlspecialchars($boekjaar_optie['id']) ?>" <?= isset($_GET['fiscal_year_id']) && $_GET['fiscal_year_id'] == $boekjaar_optie['id'] ? 'selected' : '' ?>>
-                <?= htmlspecialchars($boekjaar_optie['year']) ?>
+        <?php foreach ($fiscal_years as $fiscal_year_option): ?>
+            <option value="<?= htmlspecialchars($fiscal_year_option['id']) ?>" <?= isset($_GET['fiscal_year_id']) && $_GET['fiscal_year_id'] == $fiscal_year_option['id'] ? 'selected' : '' ?>>
+                <?= htmlspecialchars($fiscal_year_option['year']) ?>
             </option>
         <?php endforeach; ?>
     </select>
 </form>
 
         <!-- Display the financial data: income, expenses, taxes, and total -->
-        <p>Income: € <?= number_format(htmlspecialchars($income_total), 2, ',', '.') ?></p>
-        <p>Expenses: € <?= number_format(htmlspecialchars($expenses_total), 2, ',', '.') ?></p>
-        <p>Taxes: € <?= number_format(htmlspecialchars($taxes_total), 2, ',', '.') ?></p>
-        <p>Total: € <?= number_format(htmlspecialchars($total), 2, ',', '.') ?></p>
+        <p>Income: € <?= number_format(htmlspecialchars($income_total), 2, '.', ',') ?></p>
+        <p>Expenses: € <?= number_format(htmlspecialchars($expenses_total), 2, '.', ',') ?></p>
+        <p>Taxes: € <?= number_format(htmlspecialchars($taxes_total), 2, '.', ',') ?></p>
+        <p>Total: € <?= number_format(htmlspecialchars($total), 2, '.', ',') ?></p>
           
-<?php if ($contributies): ?>
+<?php if ($contributions): ?>
     <!-- Display the contributions in a table if there are any contributions -->
     <hr>
     <table>
@@ -52,21 +52,21 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'treasurer' && $_SESSION
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($contributies as $contributie): ?>
+            <?php foreach ($contributions as $contribution): ?>
                 <!-- Display each contribution in a row -->
                 <tr>
-                    <td><?= htmlspecialchars($contributie['id']) ?></td>
-                    <td><?= htmlspecialchars($contributie['name']) ?></td>
-                    <td>€ <?= number_format(htmlspecialchars($contributie['amount']), 2, ',', '.') ?></td>
-                    <td><?= htmlspecialchars($contributie['type']) ?></td>
-                    <td><?= htmlspecialchars($contributie['payment_date']) ?></td>
-                    <td><?= htmlspecialchars($contributie['note']) ?></td>
+                    <td><?= htmlspecialchars($contribution['id']) ?></td>
+                    <td><?= htmlspecialchars($contribution['name']) ?></td>
+                    <td>€ <?= number_format(htmlspecialchars($contribution['amount']), 2, '.', ',') ?></td>
+                    <td><?= htmlspecialchars($contribution['type']) ?></td>
+                    <td><?= htmlspecialchars($contribution['payment_date'] ?? 'Pending payment') ?></td>
+                    <td><?= htmlspecialchars($contribution['note']) ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
 <?php else: ?>
     <!-- If there are no contributions, display a message -->
-    <p>No contributions found for this fiscal year.</p>
+    <p>No contributions are recorded for the selected fiscal year.</p>
 <?php endif; ?>
 <?php include('footer.php'); ?>

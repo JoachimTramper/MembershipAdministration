@@ -17,7 +17,7 @@ include('header.php');
 <!-- Form to add a new member -->
 <h1>Member Management</h1>
 <h3>Add New Member</h3>
-<form method="post" action="index.php?page=member_management&action=toevoegen">
+<form method="post" action="index.php?page=member_management&action=add">
     <label for="name">Name:</label>
     <input type="text" name="name" required>
 
@@ -39,9 +39,9 @@ include('header.php');
         <option value="">Family</option>
         <?php
         //Retrieve families
-        foreach ($families as $familie) {
+        foreach ($families as $family) {
             //Display name and address together in the dropdown
-            echo "<option value='{$familie['id']}'>" . htmlspecialchars($familie['name']) . " - " . htmlspecialchars($familie['address']) . "</option>";
+            echo "<option value='{$family['id']}'>" . htmlspecialchars($family['name']) . " - " . htmlspecialchars($family['address']) . "</option>";
         }
         ?>
     </select>
@@ -61,7 +61,7 @@ include('header.php');
 
 <!-- Form to add a new family -->
 <h3>Add Family</h3>
-<form method="post" action="index.php?page=member_management&action=toevoegen_familie">
+<form method="post" action="index.php?page=member_management&action=add_family">
     <label for="family_name">Name:</label>
     <input type="text" name="family_name" placeholder="Name" required>
 
@@ -73,18 +73,18 @@ include('header.php');
 
 <!-- Form to delete a family -->
 <h3>Delete Family</h3>
-<form method="post" action="index.php?page=member_management&action=verwijder_familie">
-    <input type="hidden" name="family_id" value="<?= $familie['id'] ?>">
+<form method="post" action="index.php?page=member_management&action=delete_family">
+    <input type="hidden" name="family_id" value="<?= $family['id'] ?>">
     <label for="family_id">Select a family:</label>
     <select name="family_id" required>
         <option value="">Choose a family</option>
         <?php
-        foreach ($families as $familie) {
-            echo "<option value='{$familie['id']}'>" . htmlspecialchars($familie['name']) . " - " . htmlspecialchars($familie['address']) . "</option>";
+        foreach ($families as $family) {
+            echo "<option value='{$family['id']}'>" . htmlspecialchars($family['name']) . " - " . htmlspecialchars($family['address']) . "</option>";
         }
         ?>
     </select>
-    <button type="submit" onclick="return confirm('First, remove all family members before deleting a family. Click \'Cancel\' if you haven\'t done this yet, click \'OK\' to delete.')">Delete family</button>
+    <button type="submit" onclick="return confirm('Please remove all family members before deleting a family. Click \'Cancel\' if this hasn\'t been done yet, or click \'OK\' to proceed with deletion.')">Delete family</button>
 </form>
 <hr>
 <!-- Table view of members -->
@@ -106,21 +106,21 @@ include('header.php');
     </thead>
     <tbody>
         <!-- Check if there is member data -->
-        <?php if (isset($leden) && !empty($leden)): ?>
-        <?php foreach ($leden as $lid): ?>
+        <?php if (isset($members) && !empty($members)): ?>
+        <?php foreach ($members as $member): ?>
             <tr>
-                <td><?= htmlspecialchars($lid['id']) ?></td>
-                <td><?= htmlspecialchars($lid['name']) ?></td>
-                <td><?= htmlspecialchars($lid['address']) ?></td> 
-                <td><?= htmlspecialchars($lid['dob']) ?></td>
-                <td><?= htmlspecialchars($lid['username']) ?></td>
+                <td><?= htmlspecialchars($member['id']) ?></td>
+                <td><?= htmlspecialchars($member['name']) ?></td>
+                <td><?= htmlspecialchars($member['address']) ?></td> 
+                <td><?= htmlspecialchars($member['dob']) ?></td>
+                <td><?= htmlspecialchars($member['username']) ?></td>
                 <td>******</td> <!-- The password is not displayed in plaintext -->
-                <td><?= htmlspecialchars($lid['family_id']) ?></td>
-                <td><?= htmlspecialchars($lid['member_type']) ?></td> 
-                <td><?= htmlspecialchars($lid['role_type']) ?></td>
-                <td><a href="index.php?page=update_member&action=bewerk&id=<?= htmlspecialchars($lid['id']) ?>">Update</a></td>
-                <td><a href="index.php?page=member_management&action=verwijder&id=<?= $lid['id'] ?>" 
-                onclick="return confirm('First, adjust the person\'s contributions, remove the name and place it in the \'note\'. Click \'Cancel\' if you haven not done this yet, click \'OK\' to delete.')">Delete</a></td>
+                <td><?= htmlspecialchars($member['family_id']) ?></td>
+                <td><?= htmlspecialchars($member['member_type']) ?></td> 
+                <td><?= htmlspecialchars($member['role_type']) ?></td>
+                <td><a href="index.php?page=update_member&action=update&id=<?= htmlspecialchars($member['id']) ?>">Update</a></td>
+                <td><a href="index.php?page=member_management&action=delete&id=<?= $member['id'] ?>" 
+                onclick="return confirm('Please adjust the person\'s contributions, remove the name and add it to the \'note\' section. Click \'Cancel\' if this hasn\'t been done yet, click \'OK\' to proceed with deletion.')">Delete</a></td>
             </tr>
         <?php endforeach; ?>
         <?php else: ?>

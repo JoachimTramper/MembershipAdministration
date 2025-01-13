@@ -2,35 +2,35 @@
 
 require_once dirname(__DIR__) . '/Db.php';
 
-class SecretarisModel {
+class SecretaryModel {
     private $db;
 
     public function __construct($db) {
         $this->db = $db;
     }
     //Add a member to the database
-    public function voegLidToe($data) {
+    public function addMember($data) {
         try {
             $conn = $this->db->connect();
 
             //Determine the correct type_member_id
-            $sqlSoortLid = "SELECT id 
+            $sqlMemberType = "SELECT id 
                 FROM member_types 
                 WHERE TIMESTAMPDIFF(YEAR, ?, CURDATE()) BETWEEN age_from AND age_till";
-            $stmt = $conn->prepare($sqlSoortLid);
-            $stmt->execute([$data['geboortedatum']]);
-            $soortLidId = $stmt->fetchColumn();
+            $stmt = $conn->prepare($sqlMemberType);
+            $stmt->execute([$data['dob']]);
+            $memberTypeId = $stmt->fetchColumn();
 
             //Add member to family_members
             $sql = "INSERT INTO family_members (family_id, name, dob, member_type_id) 
                 VALUES (?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([$data['family_id'], $data['name'], $data['dob'], $soortLidId]);
+            $stmt->execute([$data['family_id'], $data['name'], $data['dob'], $memberTypeId]);
     
             //Add user to users
-            $sqlGebruiker = "INSERT INTO users (family_member_id, username, password, role) 
+            $sqlUser = "INSERT INTO users (family_member_id, username, password, role) 
                 VALUES (LAST_INSERT_ID(), ?, ?, ?)";
-            $stmt = $conn->prepare($sqlGebruiker);
+            $stmt = $conn->prepare($sqlUser);
             $stmt->execute([
                 $data['username'],
                 password_hash($data['password'], PASSWORD_DEFAULT),
@@ -42,7 +42,7 @@ class SecretarisModel {
         }
     }
     //Delete a member
-    public function verwijderLid($id) {
+    public function deleteMember($id) {
         try {
             $conn = $this->db->connect();
             $sql = "DELETE FROM family_members WHERE id = ?";
@@ -53,7 +53,7 @@ class SecretarisModel {
         }
     }
     //Add a family
-    public function voegFamilieToe($data) {
+    public function addFamily($data) {
         try {
             $conn = $this->db->connect();
             $sql = "INSERT INTO families (name, address) VALUES (?, ?)";
@@ -65,12 +65,12 @@ class SecretarisModel {
         }
     }
     //Delete a family
-    public function deleteFamilie($familieId) {
+    public function deleteFamily($familyId) {
         try {
             $conn = $this->db->connect(); 
             $sql = "DELETE FROM families WHERE id = ?";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([$familieId]);
+            $stmt->execute([$familyId]);
             //Check if a row has been deleted
             return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
@@ -102,14 +102,14 @@ class SecretarisModel {
         }
     }
     //Update the details of a member
-    public function updateLid($data) {
+    public function updateMember($data) {
         try {
             //Update family members
             $conn = $this->db->connect();
-            $sqlFamilie = "UPDATE family_members 
+            $sqlFamily = "UPDATE family_members 
                            SET family_id = ?, name = ?, dob = ?
                            WHERE id = ?";
-            $stmt = $conn->prepare($sqlFamilie);
+            $stmt = $conn->prepare($sqlFamily);
             $stmt->execute([
                 $data['family_id'],
                 $data['name'],
@@ -117,10 +117,10 @@ class SecretarisModel {
                 $data['id'] 
             ]);  
             //Update users
-            $sqlGebruiker = "UPDATE users
+            $sqlUser = "UPDATE users
                              SET username = ?, password = ?, role = ? 
                              WHERE family_member_id = ?";
-            $stmt = $conn->prepare($sqlGebruiker);
+            $stmt = $conn->prepare($sqlUser);
             $stmt->execute([
                 $data['username'],
                 password_hash($data['password'], PASSWORD_DEFAULT),
@@ -129,7 +129,7 @@ class SecretarisModel {
             ]);
             return true; //Indicate that the update was successful
         } catch (PDOException $e) {
-            throw new Exception("Fout bij het bewerken van een lid: " . $e->getMessage());
+            throw new Exception("Error editing a member: " . $e->getMessage());
         }
     }
     

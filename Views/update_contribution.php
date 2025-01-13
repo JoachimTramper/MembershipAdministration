@@ -18,29 +18,29 @@ include('header.php');
 <h2>Edit Contribution Details</h2>
 
 <!-- Display the contribution details -->
-<p><strong>ID:</strong> <?= htmlspecialchars($contributie['id']) ?></p>
-<p><strong>Family member:</strong> <?= htmlspecialchars($contributie['family_member_name'] ?? 'No family member') ?>
-<p><strong>Amount:</strong> <?= htmlspecialchars($contributie['amount']) ?></p>
-<p><strong>Type:</strong> <?= htmlspecialchars($contributie['type']) ?></p>
-<p><strong>Payment date:</strong> <?= htmlspecialchars($contributie['payment_date'] ?? 'Not paid yet') ?></p>
+<p><strong>ID:</strong> <?= htmlspecialchars($contribution['id']) ?></p>
+<p><strong>Family member:</strong> <?= htmlspecialchars($contribution['family_member_name'] ?? 'No family member') ?>
+<p><strong>Amount:</strong> <?= htmlspecialchars($contribution['amount']) ?></p>
+<p><strong>Type:</strong> <?= htmlspecialchars($contribution['type']) ?></p>
+<p><strong>Payment date:</strong> <?= htmlspecialchars($contribution['payment_date'] ?? 'Pending payment') ?></p>
 
 <!-- Form for editing the contribution -->
-<form action="index.php?page=update_contribution&id=<?= $contributie['id']; ?>" method="POST">
+<form action="index.php?page=update_contribution&id=<?= $contribution['id']; ?>" method="POST">
     <!-- Hidden fields for id and family_member_id -->
-    <input type="hidden" name="id" value="<?= $contributie['id']; ?>">
-    <input type="hidden" name="family_member_id" value="<?= $contributie['family_member_id']; ?>">
+    <input type="hidden" name="id" value="<?= $contribution['id']; ?>">
+    <input type="hidden" name="family_member_id" value="<?= $contribution['family_member_id']; ?>">
 
     <!-- Field for the contribution amount -->
     <label for="amount">Amount:</label>
-    <input type="number" step="0.01" name="amount" id="amount" value="<?= htmlspecialchars($contributie['amount']) ?>" required>
+    <input type="number" step="0.01" name="amount" id="amount" value="<?= htmlspecialchars($contribution['amount']) ?>" required>
 
     <!-- Selection for the contribution type -->
     <label for="type">Type:</label>
     <select name="type" id="type">
-        <option value="income" <?= $contributie['type'] == 'income' ? 'selected' : '' ?>>Income</option>
-        <option value="expenses" <?= $contributie['type'] == 'expenses' ? 'selected' : '' ?>>Expenses</option>
-        <option value="taxes" <?= $contributie['type'] == 'taxes' ? 'selected' : '' ?>>Taxes</option>
-        <option value="else" <?= $contributie['type'] == 'else' ? 'selected' : '' ?>>Else</option>
+        <option value="income" <?= $contribution['type'] == 'income' ? 'selected' : '' ?>>Income</option>
+        <option value="expenses" <?= $contribution['type'] == 'expenses' ? 'selected' : '' ?>>Expenses</option>
+        <option value="taxes" <?= $contribution['type'] == 'taxes' ? 'selected' : '' ?>>Taxes</option>
+        <option value="else" <?= $contribution['type'] == 'else' ? 'selected' : '' ?>>Else</option>
     </select>
 
     <!-- Field for the payment date -->
@@ -51,17 +51,17 @@ include('header.php');
     <label for="fiscal_year_id">Fiscal year:</label>
     <select name="fiscal_year_id" required>
         <option value="">Select a fiscal year</option>
-        <?php foreach ($boekjaren as $boekjaar): ?>
-            <option value="<?= htmlspecialchars($boekjaar['id']) ?>" <?= $contributie['fiscal_year_id'] == $boekjaar['id'] ? 'selected' : '' ?>><?= htmlspecialchars($boekjaar['year']) ?></option>
+        <?php foreach ($fiscal_years as $fiscal_year): ?>
+            <option value="<?= htmlspecialchars($fiscal_year['id']) ?>" <?= $contribution['fiscal_year_id'] == $fiscal_year['id'] ? 'selected' : '' ?>><?= htmlspecialchars($fiscal_year['year']) ?></option>
         <?php endforeach; ?>
     </select>
     
     <!-- Field for a note on the contribution -->
     <label for="note">Note:</label>
-    <textarea name="note" id="note"><?= htmlspecialchars($contributie['note']) ?></textarea>
+    <textarea name="note" id="note"><?= htmlspecialchars($contribution['note']) ?></textarea>
     
     <!-- Save button -->
-    <button type="submit" name="bewerk_contributie" value="bewerken">Save</button>
+    <button type="submit" name="update_contribution" value="update">Save</button>
 </form>
 <!-- Load the footer -->
 <?php include('footer.php'); ?>
