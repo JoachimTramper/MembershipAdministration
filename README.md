@@ -30,7 +30,7 @@ The application ensures that only authorized users can perform actions according
 
 - PHP 7.x
 - MySQL (Database)
-- Visual Studio Code (the final version was initially written using Wing 101 9 IDE)
+- Visual Studio Code
 
 ## Usage:
 
